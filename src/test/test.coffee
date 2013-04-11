@@ -3,17 +3,18 @@ connect = require 'connect'
 sselib = require '../sselib'
 
 # Utils
-mock = {}
-mock.req = {}
-mock.req.headers = {}
-mock.req.url = "http://example.com/" # fake the Url
-mock.req.headers['last-event-id'] = "keyboard-cat"
-mock.res = {}
-mock.res.headers = {}
-mock.res.setHeader = (k, v) ->
-  mock.res.headers[k] = v
-mock.res.once = ->
-mock.res.write = (chunk, encoding) ->
+Mock = ->
+  @req = {}
+  @req.headers = {}
+  @req.url = "http://example.com/" # fake the Url
+  @req.headers['last-event-id'] = "keyboard-cat"
+  @res = {}
+  @res.headers = {}
+  @res.setHeader = (k, v) =>
+    @res.headers[k] = v
+  @res.once = ->
+  @res.write = (chunk, encoding) ->
+  this
 
 
 SOCKET_INSTANCE_PROPERTIES_PUBLIC =
@@ -58,6 +59,7 @@ describe 'SSE', ->
       done()
 
 describe 'Initialized SSE', ->
+  mock = new Mock()
   instance = new sselib(mock.req, mock.res, keepAlive: no)
   describe 'The socket object should have all the public properties', ->
     SOCKET_INSTANCE_PROPERTIES_PUBLIC.forEach (property) ->
