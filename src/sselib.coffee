@@ -1,4 +1,5 @@
 {EventEmitter} = require 'events'
+util = require 'util'
 
 typeCheck = (type, obj) ->
   cls = Object::toString.call(obj).slice(8, -1)
@@ -26,7 +27,11 @@ class SSE extends EventEmitter
       data = JSON.stringify(data)
     "data: #{ data }\n\n"
 
-  constructor: (@req, @res, @options = @constructor.defaultOptions) ->
+  constructor: (@req, @res, @options = {}) ->
+    unless @options
+      @options = @constructor.defaultOptions
+    else
+      @options = util._extend(@options, @constructor.defaultOptions)
     @_writeHeaders() unless @res.headersSent
     @emit 'connected'
     @sendRetry options.retry
