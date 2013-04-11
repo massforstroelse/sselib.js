@@ -84,25 +84,25 @@ describe 'Initialized SSE', ->
 
   describe 'The socket object should have all the public properties', ->
     SOCKET_INSTANCE_PROPERTIES_PUBLIC.forEach (property) ->
-      it 'should have #{ property }', (done) ->
+      it "should have #{ property }", (done) ->
         instance.socket.should.have.property(property)
         done()
   
   describe 'The socket object should have all the private properties', ->
     SOCKET_INSTANCE_PROPERTIES_PRIVATE.forEach (property) ->
-      it 'should have #{ property }', (done) ->
+      it "should have #{ property }", (done) ->
         instance.socket.should.have.property(property)
         done()
   
   describe 'The socket object should have all the aliases', ->
     SOCKET_INSTANCE_ALIASES.forEach (property) ->
-      it 'should have #{ property }', (done) ->
+      it "should have #{ property }", (done) ->
         instance.socket.should.have.property(property)
         done()
 
 test = (app, signature) ->
   describe signature, ->
-    describe 'when recv accept header text/event-stream', ->
+    describe 'when request "Accept" header text/event-stream', ->
       it 'should respond to event-stream accept headers', (done) ->
         request(app).get('/').set('Accept', 'text/event-stream').expect(200).expect('Content-Type', /text\/event-stream/).end (err, res) ->
           return done(err) if err

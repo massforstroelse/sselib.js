@@ -89,7 +89,7 @@ describe('Initialized SSE', function() {
   });
   describe('The socket object should have all the public properties', function() {
     return SOCKET_INSTANCE_PROPERTIES_PUBLIC.forEach(function(property) {
-      return it('should have #{ property }', function(done) {
+      return it("should have " + property, function(done) {
         instance.socket.should.have.property(property);
         return done();
       });
@@ -97,7 +97,7 @@ describe('Initialized SSE', function() {
   });
   describe('The socket object should have all the private properties', function() {
     return SOCKET_INSTANCE_PROPERTIES_PRIVATE.forEach(function(property) {
-      return it('should have #{ property }', function(done) {
+      return it("should have " + property, function(done) {
         instance.socket.should.have.property(property);
         return done();
       });
@@ -105,7 +105,7 @@ describe('Initialized SSE', function() {
   });
   return describe('The socket object should have all the aliases', function() {
     return SOCKET_INSTANCE_ALIASES.forEach(function(property) {
-      return it('should have #{ property }', function(done) {
+      return it("should have " + property, function(done) {
         instance.socket.should.have.property(property);
         return done();
       });
@@ -115,7 +115,7 @@ describe('Initialized SSE', function() {
 
 test = function(app, signature) {
   return describe(signature, function() {
-    return describe('when recv accept header text/event-stream', function() {
+    return describe('when request "Accept" header text/event-stream', function() {
       return it('should respond to event-stream accept headers', function(done) {
         return request(app).get('/').set('Accept', 'text/event-stream').expect(200).expect('Content-Type', /text\/event-stream/).end(function(err, res) {
           if (err) {
