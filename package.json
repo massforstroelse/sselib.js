@@ -2,7 +2,7 @@
   "name": "sselib",
   "description": "SSE (Server Sent Events) middleware for connect.",
   "version": "0.0.1",
-  "author": "waawal",
+  "author": "Daniel Waardal <daniel@massforstroel.se>",
   "keywords": [
     "sse",
     "server sent events",
@@ -10,7 +10,6 @@
     "express",
     "eventsource"
   ],
-  "private": true,
   "devDependencies": {
     "coffee-script": ">=1.6.2",
     "mocha": "latest",
@@ -24,10 +23,12 @@
       "url": "https://github.com/massforstroelse/sselib.js/blob/master/LICENSE.md"
     }
   ],
+  "homepage": "https://github.com/massforstroelse/sselib.js",
   "repository": {
     "type": "git",
     "url": "http://github.com/massforstroelse/sselib.js/sselib.js.git"
   },
+  "bugs": {"url": "https://github.com/massforstroelse/sselib.js/issues"},
   "main": "./sselib.js",
   "scripts": {
     "test": "make test"
