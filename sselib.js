@@ -61,11 +61,7 @@ SSE = (function(_super) {
     this.sendEvent = __bind(this.sendEvent, this);
     this.sendRetry = __bind(this.sendRetry, this);
     this.sendComment = __bind(this.sendComment, this);
-    if (!this.options) {
-      this.options = this.constructor.defaultOptions;
-    } else {
-      this.options = util._extend(this.options, this.constructor.defaultOptions);
-    }
+    this.options = util._extend(this.constructor.defaultOptions, this.options);
     if (!this.res.headersSent) {
       this._writeHeaders();
     }

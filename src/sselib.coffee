@@ -28,10 +28,7 @@ class SSE extends EventEmitter
     "data: #{ data }\n\n"
 
   constructor: (@req, @res, @options = {}) ->
-    unless @options
-      @options = @constructor.defaultOptions
-    else
-      @options = util._extend(@options, @constructor.defaultOptions)
+    @options = util._extend(@constructor.defaultOptions, @options)
     @_writeHeaders() unless @res.headersSent
     @emit 'connected'
     @sendRetry options.retry
