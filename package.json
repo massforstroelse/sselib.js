@@ -3,23 +3,32 @@
   "description": "SSE (Server Sent Events) middleware for connect.",
   "version": "0.0.1",
   "author": "waawal",
-  "keywords": ["sse", "server sent events", "connect", "express", "eventsource"],
+  "keywords": [
+    "sse",
+    "server sent events",
+    "connect",
+    "express",
+    "eventsource"
+  ],
   "private": true,
   "devDependencies": {
     "coffee-script": ">=1.6.2",
     "mocha": "latest",
-    "should": "latest"
+    "should": "latest",
+    "connect": "~2.7.4",
+    "supertest": "~0.5.1"
   },
-  "licenses":
-    [{
+  "licenses": [
+    {
       "type": "BSD",
       "url": "https://github.com/massforstroelse/sselib.js/blob/master/LICENSE.md"
-    }],
+    }
+  ],
   "repository": {
-    "type" : "git",
+    "type": "git",
     "url": "http://github.com/massforstroelse/sselib.js/sselib.js.git"
   },
-  "main" : "./sselib.js",
+  "main": "./sselib.js",
   "scripts": {
     "test": "make test"
   }
