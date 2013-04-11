@@ -2,6 +2,20 @@ request = require 'supertest'
 connect = require 'connect'
 sselib = require '../sselib'
 
+# Utils
+mock = {}
+mock.req = {}
+mock.req.headers = {}
+mock.req.url = "http://example.com/" # fake the Url
+mock.req.headers['last-event-id'] = "keyboard-cat"
+mock.res = {}
+mock.res.headers = {}
+mock.res.setHeader = (k, v) ->
+  mock.res.headers[k] = v
+mock.res.once = ->
+mock.res.write = (chunk, encoding) ->
+
+
 SOCKET_INSTANCE_PROPERTIES_PUBLIC =
   ['sendComment',
    'sendRetry',
@@ -17,9 +31,9 @@ SOCKET_INSTANCE_PROPERTIES_PRIVATE =
    '_keepAlive']
 
 SOCKET_INSTANCE_ALIASES =
-  pub: '_dispatchMessage'
-  publish: '_dispatchMessage'
-  send: '_dispatchMessage'
+  ['pub',
+   'publish',
+   'send']
 
 describe 'SSE', ->
   describe 'comment()', ->
@@ -38,6 +52,21 @@ describe 'SSE', ->
     it 'should return a valid data record', ->
       sselib.data('cat').should.equal 'data: cat\n\n'
 
+describe 'Initialized SSE', ->
+  instance = new sselib(mock.req, mock.res, keepAlive: no)
+  describe 'The socket object should have all the public properties', ->
+    SOCKET_INSTANCE_PROPERTIES_PUBLIC.forEach (property) ->
+      it 'should have #{ property }', ->
+        instance.socket.should.have.property(property)
+  describe 'The socket object should have all the private properties', ->
+    SOCKET_INSTANCE_PROPERTIES_PRIVATE.forEach (property) ->
+      it 'should have #{ property }', ->
+        instance.socket.should.have.property(property)
+  describe 'The socket object should have all the aliases', ->
+    SOCKET_INSTANCE_ALIASES.forEach (property) ->
+      it 'should have #{ property }', ->
+        instance.socket.should.have.property(property)
+
 test = (app, signature) ->
   describe signature, ->
     describe 'when recv accept header text/event-stream', ->
@@ -45,11 +74,6 @@ test = (app, signature) ->
         request(app).get('/').set('Accept', 'text/event-stream').expect(200).expect('Content-Type', /text\/event-stream/).end (err, res) ->
           return done(err) if err
           done()
-
-
-  #describe "when Content-Length is too large", ->
-  #  it "should respond with 413", (done) ->
-  #    app.request().get("/").set("Accept", "text/event-stream").expect 413, done
 
 app = connect()
 app.use sselib.middleware(keepAlive: 3*1000, retry: 10*1000)
