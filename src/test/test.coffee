@@ -37,35 +37,43 @@ SOCKET_INSTANCE_ALIASES =
 
 describe 'SSE', ->
   describe 'comment()', ->
-    it 'should return a valid comment', ->
+    it 'should return a valid comment', (done) ->
       sselib.comment('cat').should.equal ':cat\n\n'
+      done()
   describe 'retry()', ->
-    it 'should return a valid retry instruction', ->
+    it 'should return a valid retry instruction', (done) ->
       sselib.retry(3000).should.equal 'retry: 3000\n'
+      done()
   describe 'event()', ->
-    it 'should return a valid event record', ->
+    it 'should return a valid event record', (done) ->
       sselib.event('cat').should.equal 'event: cat\n'
+      done()
   describe 'id()', ->
-    it 'should return a valid id record', ->
+    it 'should return a valid id record', (done) ->
       sselib.id('cat').should.equal 'id: cat\n'
+      done()
   describe 'data()', ->
-    it 'should return a valid data record', ->
+    it 'should return a valid data record', (done) ->
       sselib.data('cat').should.equal 'data: cat\n\n'
+      done()
 
 describe 'Initialized SSE', ->
   instance = new sselib(mock.req, mock.res, keepAlive: no)
   describe 'The socket object should have all the public properties', ->
     SOCKET_INSTANCE_PROPERTIES_PUBLIC.forEach (property) ->
-      it 'should have #{ property }', ->
+      it 'should have #{ property }', (done) ->
         instance.socket.should.have.property(property)
+        done()
   describe 'The socket object should have all the private properties', ->
     SOCKET_INSTANCE_PROPERTIES_PRIVATE.forEach (property) ->
-      it 'should have #{ property }', ->
+      it 'should have #{ property }', (done) ->
         instance.socket.should.have.property(property)
+        done()
   describe 'The socket object should have all the aliases', ->
     SOCKET_INSTANCE_ALIASES.forEach (property) ->
-      it 'should have #{ property }', ->
+      it 'should have #{ property }', (done) ->
         instance.socket.should.have.property(property)
+        done()
 
 test = (app, signature) ->
   describe signature, ->
