@@ -1,7 +1,7 @@
 {
   "name": "sselib",
   "description": "SSE (Server Sent Events) middleware for connect.",
-  "version": "0.0.1",
+  "version": "0.0.1-beta",
   "author": "Daniel Waardal <daniel@massforstroel.se>",
   "keywords": [
     "sse",
