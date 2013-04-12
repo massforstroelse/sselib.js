@@ -12,8 +12,8 @@
   ],
   "devDependencies": {
     "coffee-script": ">=1.6.2",
-    "mocha": "latest",
-    "should": "latest",
+    "mocha": "1.9.x",
+    "should": "1.2.x",
     "connect": "~2.7.4",
     "supertest": "~0.5.1"
   },
