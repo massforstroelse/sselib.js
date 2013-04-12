@@ -8,6 +8,7 @@ _SSE (Server Sent Events) library for node.js._
 
 ## Installation ##
 Install with npm:
+
     $ npm install sselib
 
 ## Connect and Express Middleware ##
@@ -60,7 +61,7 @@ Returns a SSE-serialized `string`. If called without `id` it will use a `UNIX ti
 Returns a SSE-serialized `string`.
 
 #### message(obj, [callback]) ####
-`message` is also provided as a meta-messagetype. It will return a SSE-serialized string from a message object you pass in.
+`message` is provided as a meta-messagetype. It will return a SSE-serialized string from a message object you pass in.
 
 #### headers([callback]) ####
 Returns a `Object` containing valid HTTP-headers suitable for a `http.ServerResponse`.
