@@ -91,6 +91,8 @@ A `message object` is simply a javascript object containing the `data` and `even
 
 ## License ##
 
+BSD (see [LICENSE.md](https://github.com/massforstroelse/sselib.js/blob/master/LICENSE.md "LICENSE.md"))  
+
 ![massförströelse logo](http://www.massforstroel.se/uploads/4/3/3/4/4334921/4793588.png?20)  
 Made by [massförströelse](http://massforstroel.se/ "massförströel.se")  
-BSD (see [LICENSE.md](https://github.com/massforstroelse/sselib.js/blob/master/LICENSE.md "LICENSE.md"))  
+
