@@ -65,7 +65,7 @@ Returns a `Object` containing valid HTTP-headers for suitable for a `http.Server
 
 ### Message Object ###
 
-A `message object` is simply a javascript object containing  `data` and `event` keys, it can also optionally be given a `id` key.
+A `message object` is simply a javascript object containing the `data` and `event` keys, it can also optionally be given a `id` key.
 
 #### Example ####
     {id: 5364, event: 'update', data: 'I am a stray cat.'}
