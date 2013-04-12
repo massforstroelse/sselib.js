@@ -30,7 +30,10 @@ SOCKET_INSTANCE_PROPERTIES_PUBLIC =
    'sendEvent',
    'sendId',
    'sendData',
-   'sendRaw']
+   'sendRaw',
+   'req',
+   'res',
+   'options']
 
 SOCKET_INSTANCE_PROPERTIES_PRIVATE =
   ['_processAndSendMessage',
@@ -73,7 +76,6 @@ describe 'SSE', -> # add @message
 
   describe 'message()', ->
     it 'should serialize a JSON to valid SSE', (done) ->
-      
       sselib.message(testMessage).should.equal 'id: 42\nevent: hi\ndata: yo\n\n'
       done()
 
