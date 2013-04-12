@@ -22,4 +22,6 @@ compile:
 		--output ./ \
 		./src/
 
+prepare: | compile test
+
 .PHONY: compile test test-w
