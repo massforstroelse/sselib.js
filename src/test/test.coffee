@@ -138,4 +138,4 @@ app.use sselib.middleware(keepAlive: no, retry: 10*1000)
 app.use (req, res, next) ->
   res.sse(testMessage)
   next()
-test app, "sselib.middleware()"
+test app, "As Middleware"

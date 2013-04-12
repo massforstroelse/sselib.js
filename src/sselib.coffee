@@ -104,6 +104,7 @@ class SSE extends EventEmitter
 SSE::pub = SSE::_dispatchMessage
 SSE::publish = SSE::_dispatchMessage
 SSE::send = SSE::_dispatchMessage
+
 module.exports = SSE
 
 ### Connect/Express middleware ###
