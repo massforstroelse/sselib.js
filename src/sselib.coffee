@@ -11,7 +11,7 @@ class SSE extends EventEmitter
     keepAlive: 15*1000
 
   @comment: (comment) ->
-    ":#{comment}\n\n"
+    ": #{ comment }\n\n"
 
   @retry: (time) ->
     "retry: #{ time }\n"
@@ -97,7 +97,7 @@ class SSE extends EventEmitter
 
   _keepAlive: () ->
     @intervalId = setInterval (=>
-      @sendComment("KEEPALIVE #{ Date.now() }\n\n")
+      @sendComment("keepalive #{ Date.now() }\n\n")
     ), @options.keepAlive
 
 ### Aliases ###

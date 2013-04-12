@@ -48,7 +48,7 @@ SOCKET_INSTANCE_OPTIONS_KEYS =
 describe 'SSE', -> # add @message
   describe 'comment()', ->
     it 'should return a valid comment', (done) ->
-      sselib.comment('cat').should.equal ':cat\n\n'
+      sselib.comment('cat').should.equal ': cat\n\n'
       done()
   
   describe 'retry()', ->
