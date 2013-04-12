@@ -17,6 +17,7 @@ class SSE extends EventEmitter
 
   @retry: (time, callback) ->
     serialized = "retry: #{ time }\n"
+    if not callback then serialized else callback(error, serialized)
 
   @event: (event, callback) ->
     serialized = if event then "event: #{ event }\n" else ''
