@@ -4,6 +4,8 @@ _SSE (Server Sent Events) library for node.js._
 
 `sselib` is a implementation of the server-side part of the [SSE] [1] protocol written in `Coffee Script` for the `node.js` platform.
 
+[![Build Status](https://travis-ci.org/massforstroelse/sselib.js.png)](https://travis-ci.org/massforstroelse/sselib.js)
+
   [1]: http://dev.w3.org/html5/eventsource/
 
 ## Installation ##
