@@ -53,30 +53,54 @@ describe 'SSE', -> # add @message
     it 'should return a valid comment', (done) ->
       sselib.comment('cat').should.equal ': cat\n\n'
       done()
+    it 'should return a valid comment to a optional callback', (done) ->
+      sselib.comment 'cat', (err, result) ->
+        result.should.equal ': cat\n\n'
+        done()
   
   describe 'retry()', ->
     it 'should return a valid retry instruction', (done) ->
       sselib.retry(3000).should.equal 'retry: 3000\n'
+      done()
+    it 'should return a valid retry instruction to a optional callback', (done) ->
+      sselib.retry 3000, (err, result) ->
+        result.should.equal 'retry: 3000\n'
       done()
   
   describe 'event()', ->
     it 'should return a valid event record', (done) ->
       sselib.event('cat').should.equal 'event: cat\n'
       done()
+    it 'should return a valid event record to a optional callback', (done) ->
+      sselib.event 'cat', (err, result) ->
+        result.should.equal 'event: cat\n'
+      done()
   
   describe 'id()', ->
     it 'should return a valid id record', (done) ->
       sselib.id('cat').should.equal 'id: cat\n'
+      done()
+    it 'should return a valid id record to a optional callback', (done) ->
+      sselib.id 'cat', (err, result) ->
+        result.should.equal 'id: cat\n'
       done()
   
   describe 'data()', ->
     it 'should return a valid data record', (done) ->
       sselib.data('cat').should.equal 'data: cat\n\n'
       done()
+    it 'should return a valid data record to a optional callback', (done) ->
+      sselib.data 'cat', (err, result) ->
+        result.should.equal 'data: cat\n\n'
+      done()
 
   describe 'message()', ->
     it 'should serialize a JSON to valid SSE', (done) ->
       sselib.message(testMessage).should.equal 'id: 42\nevent: hi\ndata: yo\n\n'
+      done()
+    it 'should serialize a JSON to valid SSE to a optional callback', (done) ->
+      sselib.message testMessage, (err, result) ->
+        result.should.equal 'id: 42\nevent: hi\ndata: yo\n\n'
       done()
 
   describe 'headers()', ->
@@ -86,6 +110,14 @@ describe 'SSE', -> # add @message
         'Cache-Control': 'no-cache'
         'Connection': 'keep-alive'
         'Transfer-Encoding': 'identity'
+      done()
+    it 'should return a object containing valid SSE Headers to a optional callback', (done) ->
+      sselib.headers (err, result) ->
+        result.should.eql
+          'Content-Type': 'text/event-stream; charset=utf-8'
+          'Cache-Control': 'no-cache'
+          'Connection': 'keep-alive'
+          'Transfer-Encoding': 'identity'
       done()
 
 describe 'Initialized SSE', ->
