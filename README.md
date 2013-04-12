@@ -6,13 +6,17 @@ _SSE (Server Sent Events) library for node.js._
 
   [1]: http://dev.w3.org/html5/eventsource/
 
+## Installation ##
+Install with npm:
+    $ npm install sselib
+
 ## Connect and Express Middleware ##
 `sselib` can be used as a middleware for applications following the Connect convention.
 
 ### Example ###
-    sselib = require('sselib')
+    sselib = require('sselib');
     ...
-    app.use(sselib.middleware())
+    app.use(sselib.middleware());
     ...
     app.get('/events', function(req, res) {
         res.sse(
@@ -27,7 +31,7 @@ _SSE (Server Sent Events) library for node.js._
 ## Use as a library to serialize data for your own transmission ##
 
 ### Example ###
-    sselib = require('sselib')
+    sselib = require('sselib');
 
     sselib.event("notice") // "event: notice\n"
     sselib.data("Hello there!") // "data: Hello there!\n\n"
@@ -59,7 +63,7 @@ Returns a SSE-serialized `string`.
 `message` is also provided as a meta-messagetype. It will return a SSE-serialized string from a message object you pass in.
 
 #### headers([callback]) ####
-Returns a `Object` containing valid HTTP-headers for suitable for a `http.ServerResponse`.
+Returns a `Object` containing valid HTTP-headers suitable for a `http.ServerResponse`.
 
 ## Concepts ##
 
