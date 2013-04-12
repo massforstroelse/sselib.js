@@ -1,6 +1,7 @@
 {EventEmitter} = require 'events'
 util = require 'util'
 
+error = null
 typeCheck = (type, obj) ->
   cls = Object::toString.call(obj).slice(8, -1)
   obj isnt undefined and obj isnt null and cls is type
@@ -12,31 +13,31 @@ class SSE extends EventEmitter
 
   @comment: (comment, callback) ->
     serialized = ": #{ comment }\n\n"
-    if not callback then serialized else callback(serialized)
+    if not callback then serialized else callback(error, serialized)
 
   @retry: (time, callback) ->
     serialized = "retry: #{ time }\n"
 
   @event: (event, callback) ->
     serialized = if event then "event: #{ event }\n" else ''
-    if not callback then serialized else callback(serialized)
+    if not callback then serialized else callback(error, serialized)
 
   @id: (id, callback) ->
     if typeCheck 'Function', id
         callback = id
         id = null
     serialized = "id: #{ if id then id else (new Date()).getTime() }\n"
-    if not callback then serialized else callback(serialized)
+    if not callback then serialized else callback(error, serialized)
 
   @data: (data, callback) ->
     unless typeCheck 'String', data
       data = JSON.stringify(data)
     serialized = if data then "data: #{ data }\n\n" else ''
-    if not callback then serialized else callback(serialized)
+    if not callback then serialized else callback(error, serialized)
 
   @message: (obj, callback) ->
     serialized = [@id(obj.id), @event(obj.event), @data(obj.data)].join('')
-    if not callback then serialized else callback(serialized)
+    if not callback then serialized else callback(error, serialized)
 
   @headers: (callback) ->
     headerDict =
@@ -44,7 +45,7 @@ class SSE extends EventEmitter
       'Cache-Control': 'no-cache'
       'Connection': 'keep-alive'
       'Transfer-Encoding': 'identity'
-    if not callback then headerDict else callback(headerDict)
+    if not callback then headerDict else callback(error, headerDict)
 
   constructor: (@req, @res, @options = {}) ->
     @options = util._extend(@constructor.defaultOptions, @options)
