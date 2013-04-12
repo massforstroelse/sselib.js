@@ -1,7 +1,7 @@
 {
   "name": "sselib",
   "description": "SSE (Server Sent Events) middleware for connect.",
-  "version": "0.0.1-beta",
+  "version": "0.0.1",
   "author": "Daniel Waardal <daniel@massforstroel.se>",
   "keywords": [
     "sse",
@@ -31,6 +31,8 @@
   "bugs": {"url": "https://github.com/massforstroelse/sselib.js/issues"},
   "main": "./sselib.js",
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+    "compile": "make compile",
+    "build": "make prepare"
   }
 }
