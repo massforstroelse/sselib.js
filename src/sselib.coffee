@@ -10,31 +10,41 @@ class SSE extends EventEmitter
     retry: 5*1000
     keepAlive: 15*1000
 
-  @comment: (comment) ->
-    ": #{ comment }\n\n"
+  @comment: (comment, callback) ->
+    serialized = ": #{ comment }\n\n"
+    if not callback then serialized else callback(serialized)
 
-  @retry: (time) ->
-    "retry: #{ time }\n"
+  @retry: (time, callback) ->
+    serialized = "retry: #{ time }\n"
 
-  @event: (event) ->
-    if event then "event: #{ event }\n" else ''
+  @event: (event, callback) ->
+    serialized = if event then "event: #{ event }\n" else ''
+    if not callback then serialized else callback(serialized)
 
-  @id: (id) ->
-    "id: #{ if id then id else (new Date()).getTime() }\n"
+  @id: (id, callback) ->
+    if typeCheck 'Function', id
+        callback = id
+        id = null
+    serialized = "id: #{ if id then id else (new Date()).getTime() }\n"
+    if not callback then serialized else callback(serialized)
 
-  @data: (data) ->
+  @data: (data, callback) ->
     unless typeCheck 'String', data
       data = JSON.stringify(data)
-    if data then "data: #{ data }\n\n" else ''
+    serialized = if data then "data: #{ data }\n\n" else ''
+    if not callback then serialized else callback(serialized)
 
-  @message: (obj) ->
-    [@id(obj.id), @event(obj.event), @data(obj.data)].join('')
+  @message: (obj, callback) ->
+    serialized = [@id(obj.id), @event(obj.event), @data(obj.data)].join('')
+    if not callback then serialized else callback(serialized)
 
-  @headers: ->
-    'Content-Type': 'text/event-stream; charset=utf-8'
-    'Cache-Control': 'no-cache'
-    'Connection': 'keep-alive'
-    'Transfer-Encoding': 'identity'
+  @headers: (callback) ->
+    headerDict =
+      'Content-Type': 'text/event-stream; charset=utf-8'
+      'Cache-Control': 'no-cache'
+      'Connection': 'keep-alive'
+      'Transfer-Encoding': 'identity'
+    if not callback then headerDict else callback(headerDict)
 
   constructor: (@req, @res, @options = {}) ->
     @options = util._extend(@constructor.defaultOptions, @options)
