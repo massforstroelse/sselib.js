@@ -27,6 +27,9 @@ class SSE extends EventEmitter
       data = JSON.stringify(data)
     "data: #{ data }\n\n"
 
+  @message: (obj) =>
+    [@id(obj.id), @event(obj.event), @data(obj.data)].join('')
+
   constructor: (@req, @res, @options = {}) ->
     @options = util._extend(@constructor.defaultOptions, @options)
     @_writeHeaders() unless @res.headersSent
@@ -53,33 +56,29 @@ class SSE extends EventEmitter
     return callable
 
   sendComment: (comment) =>
-    @res.write @constructor.comment(comment)
+    @sendRaw @constructor.comment(comment)
 
   sendRetry: (time) =>
-    @res.write @constructor.retry(time)
+    @sendRaw @constructor.retry(time)
 
   sendEvent: (event) =>
-    @res.write @constructor.event(event)
+    @sendRaw @constructor.event(event)
 
   sendId: (id) =>
-    @res.write @constructor.id(id)
+    @sendRaw @constructor.id(id)
 
   sendData: (data) =>
-    @res.write @constructor.data(data)
+    @sendRaw @constructor.data(data)
 
   sendRaw: (data) =>
     @res.write data
 
-  _processMessage: (obj) =>
-    [id, event, data] =
-    [@constructor.id(obj.id),
-     @constructor.event(obj.event),
-     @constructor.data(obj.data)]
-    @res.write id + event + data
+  _processAndSendMessage: (message) ->
+    @sendRaw @constructor.message(message)
 
   _dispatchMessage: (message) =>
     if typeCheck 'Object', message
-        @_processMessage(message)
+        @_processAndSendMessage(message)
     else if typeCheck 'String', message
         @sendData message
     else if typeCheck 'Array', message
@@ -113,5 +112,5 @@ module.exports.middleware = (options) ->
   options.keepAlive = options?.keepAlive or 15*1000
   return (req, res, next) ->
     if req.headers.accept is "text/event-stream"
-      res.sse = new SSE req, res, options
+      res.sse = new SSE(req, res, options)
     next()
