@@ -16,7 +16,12 @@ Mock = ->
   @res.write = (chunk, encoding) ->
   this
 
+testMessage =
+  id: 42
+  event: "hi"
+  data: "yo"
 
+# Properties
 SOCKET_INSTANCE_PROPERTIES_PUBLIC =
   ['sendComment',
    'sendRetry',
@@ -26,7 +31,7 @@ SOCKET_INSTANCE_PROPERTIES_PUBLIC =
    'sendRaw']
 
 SOCKET_INSTANCE_PROPERTIES_PRIVATE =
-  ['_processMessage',
+  ['_processAndSendMessage',
    '_dispatchMessage',
    '_writeHeaders',
    '_keepAlive']
@@ -37,7 +42,8 @@ SOCKET_INSTANCE_ALIASES =
 SOCKET_INSTANCE_OPTIONS_KEYS =
   ['keepAlive', 'retry']
 
-describe 'SSE', ->
+# Let's begin testing!
+describe 'SSE', -> # add @message
   describe 'comment()', ->
     it 'should return a valid comment', (done) ->
       sselib.comment('cat').should.equal ':cat\n\n'
@@ -61,6 +67,12 @@ describe 'SSE', ->
   describe 'data()', ->
     it 'should return a valid data record', (done) ->
       sselib.data('cat').should.equal 'data: cat\n\n'
+      done()
+
+  describe 'message()', ->
+    it 'should serialize a JSON to valid SSE', (done) ->
+      
+      sselib.message(testMessage).should.equal 'id: 42\nevent: hi\ndata: yo\n\n'
       done()
 
 describe 'Initialized SSE', ->
@@ -103,11 +115,14 @@ describe 'Initialized SSE', ->
 test = (app, signature) ->
   describe signature, ->
     describe 'when request "Accept" header text/event-stream', ->
-      it 'should respond to event-stream accept headers', (done) ->
+      it 'should respond and attach itself whenever seeing event-stream accept headers', (done) ->
         request(app).get('/').set('Accept', 'text/event-stream').expect(200).expect('Content-Type', /text\/event-stream/).end (err, res) ->
           return done(err) if err
           done()
 
 app = connect()
 app.use sselib.middleware(keepAlive: no, retry: 10*1000)
+app.use (req, res, next) ->
+  res.sse(testMessage)
+  next()
 test app, "sselib.middleware()"
