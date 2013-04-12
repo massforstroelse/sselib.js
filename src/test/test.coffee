@@ -12,6 +12,8 @@ Mock = ->
   @res.headers = {}
   @res.setHeader = (k, v) =>
     @res.headers[k] = v
+  @res.writeHead = (code, reason, headers) =>
+
   @res.once = ->
   @res.write = (chunk, encoding) ->
   this
@@ -73,6 +75,15 @@ describe 'SSE', -> # add @message
     it 'should serialize a JSON to valid SSE', (done) ->
       
       sselib.message(testMessage).should.equal 'id: 42\nevent: hi\ndata: yo\n\n'
+      done()
+
+  describe 'headers()', ->
+    it 'should return a object containing valid SSE Headers', (done) ->
+      sselib.headers().should.eql
+        'Content-Type': 'text/event-stream; charset=utf-8'
+        'Cache-Control': 'no-cache'
+        'Connection': 'keep-alive'
+        'Transfer-Encoding': 'identity'
       done()
 
 describe 'Initialized SSE', ->

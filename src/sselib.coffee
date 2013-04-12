@@ -17,18 +17,24 @@ class SSE extends EventEmitter
     "retry: #{ time }\n"
 
   @event: (event) ->
-    "event: #{ event }\n"
+    if event then "event: #{ event }\n" else ''
 
   @id: (id) ->
-    "id: #{ id or (new Date()).getTime() }\n"
+    "id: #{ if id then id else (new Date()).getTime() }\n"
 
   @data: (data) ->
     unless typeCheck 'String', data
       data = JSON.stringify(data)
-    "data: #{ data }\n\n"
+    if data then "data: #{ data }\n\n" else ''
 
-  @message: (obj) =>
+  @message: (obj) ->
     [@id(obj.id), @event(obj.event), @data(obj.data)].join('')
+
+  @headers: ->
+    'Content-Type': 'text/event-stream; charset=utf-8'
+    'Cache-Control': 'no-cache'
+    'Connection': 'keep-alive'
+    'Transfer-Encoding': 'identity'
 
   constructor: (@req, @res, @options = {}) ->
     @options = util._extend(@constructor.defaultOptions, @options)
@@ -87,12 +93,7 @@ class SSE extends EventEmitter
       throw new Error("Unparsable message. (#{ message })")
 
   _writeHeaders: ->
-    @res.charset = 'utf-8'
-    @res.statusCode = 200
-    @res.setHeader "Content-Type", "text/event-stream"
-    @res.setHeader "Cache-Control", "no-cache"
-    @res.setHeader "Connection", "keep-alive"
-    @res.setHeader "Transfer-Encoding", "identity"
+    @res.writeHead 200, 'OK', @constructor.headers()
 
   _keepAlive: () ->
     @intervalId = setInterval (=>
