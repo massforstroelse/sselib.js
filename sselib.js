@@ -24,7 +24,7 @@ SSE = (function(_super) {
   };
 
   SSE.comment = function(comment) {
-    return ":" + comment + "\n\n";
+    return ": " + comment + "\n\n";
   };
 
   SSE.retry = function(time) {
@@ -32,18 +32,39 @@ SSE = (function(_super) {
   };
 
   SSE.event = function(event) {
-    return "event: " + event + "\n";
+    if (event) {
+      return "event: " + event + "\n";
+    } else {
+      return '';
+    }
   };
 
   SSE.id = function(id) {
-    return "id: " + (id || (new Date()).getTime()) + "\n";
+    return "id: " + (id ? id : (new Date()).getTime()) + "\n";
   };
 
   SSE.data = function(data) {
     if (!typeCheck('String', data)) {
       data = JSON.stringify(data);
     }
-    return "data: " + data + "\n\n";
+    if (data) {
+      return "data: " + data + "\n\n";
+    } else {
+      return '';
+    }
+  };
+
+  SSE.message = function(obj) {
+    return [this.id(obj.id), this.event(obj.event), this.data(obj.data)].join('');
+  };
+
+  SSE.headers = function() {
+    return {
+      'Content-Type': 'text/event-stream; charset=utf-8',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+      'Transfer-Encoding': 'identity'
+    };
   };
 
   function SSE(req, res, options) {
@@ -54,7 +75,6 @@ SSE = (function(_super) {
     this.res = res;
     this.options = options != null ? options : {};
     this._dispatchMessage = __bind(this._dispatchMessage, this);
-    this._processMessage = __bind(this._processMessage, this);
     this.sendRaw = __bind(this.sendRaw, this);
     this.sendData = __bind(this.sendData, this);
     this.sendId = __bind(this.sendId, this);
@@ -99,39 +119,36 @@ SSE = (function(_super) {
   }
 
   SSE.prototype.sendComment = function(comment) {
-    return this.res.write(this.constructor.comment(comment));
+    return this.sendRaw(this.constructor.comment(comment));
   };
 
   SSE.prototype.sendRetry = function(time) {
-    return this.res.write(this.constructor.retry(time));
+    return this.sendRaw(this.constructor.retry(time));
   };
 
   SSE.prototype.sendEvent = function(event) {
-    return this.res.write(this.constructor.event(event));
+    return this.sendRaw(this.constructor.event(event));
   };
 
   SSE.prototype.sendId = function(id) {
-    return this.res.write(this.constructor.id(id));
+    return this.sendRaw(this.constructor.id(id));
   };
 
   SSE.prototype.sendData = function(data) {
-    return this.res.write(this.constructor.data(data));
+    return this.sendRaw(this.constructor.data(data));
   };
 
   SSE.prototype.sendRaw = function(data) {
     return this.res.write(data);
   };
 
-  SSE.prototype._processMessage = function(obj) {
-    var data, event, id, _ref;
-
-    _ref = [this.constructor.id(obj.id), this.constructor.event(obj.event), this.constructor.data(obj.data)], id = _ref[0], event = _ref[1], data = _ref[2];
-    return this.res.write(id + event + data);
+  SSE.prototype._processAndSendMessage = function(message) {
+    return this.sendRaw(this.constructor.message(message));
   };
 
   SSE.prototype._dispatchMessage = function(message) {
     if (typeCheck('Object', message)) {
-      return this._processMessage(message);
+      return this._processAndSendMessage(message);
     } else if (typeCheck('String', message)) {
       return this.sendData(message);
     } else if (typeCheck('Array', message)) {
@@ -144,19 +161,14 @@ SSE = (function(_super) {
   };
 
   SSE.prototype._writeHeaders = function() {
-    this.res.charset = 'utf-8';
-    this.res.statusCode = 200;
-    this.res.setHeader("Content-Type", "text/event-stream");
-    this.res.setHeader("Cache-Control", "no-cache");
-    this.res.setHeader("Connection", "keep-alive");
-    return this.res.setHeader("Transfer-Encoding", "identity");
+    return this.res.writeHead(200, 'OK', this.constructor.headers());
   };
 
   SSE.prototype._keepAlive = function() {
     var _this = this;
 
     return this.intervalId = setInterval((function() {
-      return _this.sendComment("KEEPALIVE " + (Date.now()) + "\n\n");
+      return _this.sendComment("keepalive " + (Date.now()) + "\n\n");
     }), this.options.keepAlive);
   };
 
