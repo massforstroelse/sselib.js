@@ -41,48 +41,95 @@ SOCKET_INSTANCE_OPTIONS_KEYS = ['keepAlive', 'retry'];
 
 describe('SSE', function() {
   describe('comment()', function() {
-    return it('should return a valid comment', function(done) {
+    it('should return a valid comment', function(done) {
       sselib.comment('cat').should.equal(': cat\n\n');
       return done();
     });
+    return it('should return a valid comment to a optional callback', function(done) {
+      return sselib.comment('cat', function(err, result) {
+        result.should.equal(': cat\n\n');
+        return done();
+      });
+    });
   });
   describe('retry()', function() {
-    return it('should return a valid retry instruction', function(done) {
+    it('should return a valid retry instruction', function(done) {
       sselib.retry(3000).should.equal('retry: 3000\n');
+      return done();
+    });
+    return it('should return a valid retry instruction to a optional callback', function(done) {
+      sselib.retry(3000, function(err, result) {
+        return result.should.equal('retry: 3000\n');
+      });
       return done();
     });
   });
   describe('event()', function() {
-    return it('should return a valid event record', function(done) {
+    it('should return a valid event record', function(done) {
       sselib.event('cat').should.equal('event: cat\n');
+      return done();
+    });
+    return it('should return a valid event record to a optional callback', function(done) {
+      sselib.event('cat', function(err, result) {
+        return result.should.equal('event: cat\n');
+      });
       return done();
     });
   });
   describe('id()', function() {
-    return it('should return a valid id record', function(done) {
+    it('should return a valid id record', function(done) {
       sselib.id('cat').should.equal('id: cat\n');
+      return done();
+    });
+    return it('should return a valid id record to a optional callback', function(done) {
+      sselib.id('cat', function(err, result) {
+        return result.should.equal('id: cat\n');
+      });
       return done();
     });
   });
   describe('data()', function() {
-    return it('should return a valid data record', function(done) {
+    it('should return a valid data record', function(done) {
       sselib.data('cat').should.equal('data: cat\n\n');
+      return done();
+    });
+    return it('should return a valid data record to a optional callback', function(done) {
+      sselib.data('cat', function(err, result) {
+        return result.should.equal('data: cat\n\n');
+      });
       return done();
     });
   });
   describe('message()', function() {
-    return it('should serialize a JSON to valid SSE', function(done) {
+    it('should serialize a JSON to valid SSE', function(done) {
       sselib.message(testMessage).should.equal('id: 42\nevent: hi\ndata: yo\n\n');
+      return done();
+    });
+    return it('should serialize a JSON to valid SSE to a optional callback', function(done) {
+      sselib.message(testMessage, function(err, result) {
+        return result.should.equal('id: 42\nevent: hi\ndata: yo\n\n');
+      });
       return done();
     });
   });
   return describe('headers()', function() {
-    return it('should return a object containing valid SSE Headers', function(done) {
+    it('should return a object containing valid SSE Headers', function(done) {
       sselib.headers().should.eql({
         'Content-Type': 'text/event-stream; charset=utf-8',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
         'Transfer-Encoding': 'identity'
+      });
+      return done();
+    });
+    return it('should return a object containing valid SSE Headers to a optional callback', function(done) {
+      sselib.headers(function(err, result) {
+        return result.should.eql({
+          'Content-Type': 'text/event-stream; charset=utf-8',
+          'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive',
+          'Transfer-Encoding': 'identity'
+        });
       });
       return done();
     });
@@ -164,4 +211,4 @@ app.use(function(req, res, next) {
   return next();
 });
 
-test(app, "sselib.middleware()");
+test(app, "As Middleware");
