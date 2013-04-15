@@ -1,10 +1,16 @@
 {EventEmitter} = require 'events'
-util = require 'util'
 
 error = null
 typeCheck = (type, obj) ->
   cls = Object::toString.call(obj).slice(8, -1)
   obj isnt undefined and obj isnt null and cls is type
+extend = (origin, add) ->
+  # Don't do anything if add isn't an object
+  return origin  if not add or not typeCheck('Object', add)
+  keys = Object.keys(add)
+  for key in keys
+    origin[key] = add[key]
+  origin
 
 class SSE extends EventEmitter
   @defaultOptions =
@@ -49,7 +55,7 @@ class SSE extends EventEmitter
     if not callback then headerDict else callback(error, headerDict)
 
   constructor: (@req, @res, @options = {}) ->
-    @options = util._extend(@constructor.defaultOptions, @options)
+    @options = extend(@constructor.defaultOptions, @options)
     @_writeHeaders() unless @res.headersSent
     @emit 'connected'
     @sendRetry options.retry
