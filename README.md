@@ -1,4 +1,4 @@
-# sselib #
+![](http://dl.dropboxusercontent.com/u/15640279/massforstroelse-site/sse-lib.png)
 
 _SSE (Server Sent Events) library for node.js._
 
