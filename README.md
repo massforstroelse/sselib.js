@@ -54,29 +54,29 @@ Install with npm:
         console.log(result) // "data: Hello there!\n\n"
         });
 
-### Available messages ###
+### Serializers ###
 
-#### comment(comment, [callback]) ####
+#### sselib.comment(comment, [callback]) ####
 
-Returns a SSE-serialized `string` representing a comment.
+Returns a SSE-serialized comment `string` representing a comment (please note that comments are invisible to browser clients).
 
-#### event(event, [callback]) ####
+#### sselib.event(event, [callback]) ####
 
-Returns a SSE-serialized `string` that can be used with a following `data` type to trigger a event in the browser.
+Returns a SSE-serialized event `string` that can be used with a following `data` type to trigger a event in the browser.
 
-#### id([id], [callback]) ####
+#### sselib.id([id], [callback]) ####
 
-Returns a SSE-serialized `string`. If called without `id` it will use a `UNIX timestamp` as the `id`.
+Returns a SSE-serialized id `string`. If called without `id` it will use a `UNIX timestamp` as the `id`.
 
-#### data(data, [callback]) ####
+#### sselib.data(data, [callback]) ####
 
-Returns a SSE-serialized `string`.
+Returns a SSE-serialized data `string`.
 
-#### message(obj, [callback]) ####
+#### sselib.message(obj, [callback]) ####
 
-`message` is provided as a meta-messagetype. It will return a SSE-serialized string from a message object you pass in.
+`message` is provided as a meta-serializer. It will return a SSE-serialized string from a message object you pass in.
 
-#### headers([callback]) ####
+#### sselib.headers([callback]) ####
 
 Returns a `Object` containing valid HTTP-headers suitable for a `http.ServerResponse`.
 
