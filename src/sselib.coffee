@@ -114,10 +114,14 @@ class SSE extends EventEmitter
   _writeHeaders: ->
     @res.writeHead 200, 'OK', @constructor.headers()
 
-  _keepAlive: () ->
-    @intervalId = setInterval (=>
-      @sendComment("keepalive #{ Date.now() }\n\n")
-    ), @options.keepAlive
+  _keepAlive: ->
+    schedule = ->
+      setTimeout (=>
+        @sendComment("keepalive #{ Date.now() }\n\n")
+        @intervalId = schedule()
+      ), @options.keepAlive
+    @intervalId = schedule()
+
 
 ### Aliases ###
 SSE::pub = SSE::_dispatchMessage
@@ -131,6 +135,7 @@ middleware = (req, res, options) ->
   callable = (message) -> @sse.socket.publish(message)
   callable.socket = new SSE(req, res, options)
   return callable
+
 module.exports.middleware = (options) ->
   ### Configuration, values in milliseconds ###
   options.retry = options?.retry or 3*1000

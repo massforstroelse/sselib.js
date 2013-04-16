@@ -230,11 +230,17 @@ SSE = (function(_super) {
   };
 
   SSE.prototype._keepAlive = function() {
-    var _this = this;
+    var schedule;
 
-    return this.intervalId = setInterval((function() {
-      return _this.sendComment("keepalive " + (Date.now()) + "\n\n");
-    }), this.options.keepAlive);
+    schedule = function() {
+      var _this = this;
+
+      return setTimeout((function() {
+        _this.sendComment("keepalive " + (Date.now()) + "\n\n");
+        return _this.intervalId = schedule();
+      }), this.options.keepAlive);
+    };
+    return this.intervalId = schedule();
   };
 
   return SSE;
