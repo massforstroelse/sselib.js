@@ -128,7 +128,7 @@ module.exports = SSE
 
 ### Connect/Express middleware ###
 middleware = (req, res, options) ->
-  callable = (message) -> @sse.socekt.publish(message)
+  callable = (message) -> @sse.socket.publish(message)
   callable.socket = new SSE(req, res, options)
   return callable
 module.exports.middleware = (options) ->
