@@ -1,4 +1,4 @@
-![](http://dl.dropboxusercontent.com/u/15640279/massforstroelse-site/sse-lib.png)
+[![sselib.js](http://dl.dropboxusercontent.com/u/15640279/massforstroelse-site/sse-lib.png)](https://npmjs.org/package/sselib)
 
 _SSE (Server Sent Events) library for node.js._
 
@@ -10,9 +10,13 @@ _SSE (Server Sent Events) library for node.js._
 
 ## Installation ##
 
-Install with npm:
+### Install with npm: ###
 
     $ npm install sselib
+
+### Requirements ###
+
+None, tested on node.js 0.6 >
 
 ## Connect and Express Middleware ##
 
@@ -23,10 +27,13 @@ Install with npm:
 #### Javascript ####
 
 ```javascript
-    sselib = require('sselib');
-    ...
+    var sselib = require('sselib'),
+    express = require('express');
+
+    var app = express();
+    
     app.use(sselib.middleware());
-    ...
+    
     app.get('/events', function(req, res) {
         res.sse(
             {id: 5364,
@@ -36,15 +43,20 @@ Install with npm:
         );
         
     });
+
+    app.listen(3000);
 ```
 
 #### Coffeescript ####
 
 ```coffeescript
     sselib = require 'sselib'
-    ...
+    express = require 'express'
+
+    app = express()
+
     app.use sselib.middleware()
-    ...
+    
     app.get '/events', (req, res) ->
       res.sse
         id: 5364
@@ -52,15 +64,42 @@ Install with npm:
         data: 'I am a stray cat.'
 ```
 
+### Options ###
+
+You can pass options when initializing the middleware.
+
+```javascript
+    app.use(sselib.middleware({
+        retry: 5*1000,
+        keepAlive: 15*1000,
+        compatibility: true
+    });
+```
+
+#### retry ####
+
+The time in milliseconds for client reconnects. Default is 5 seconds.  
+Set to `false` in order to disable.
+
+#### keepAlive ####
+
+Sends pseudo keep alive heartbeats in order to keep the connection open. The value is the amount of milliseconds between each keepAlive heartbeat. Default is 15 seconds.  
+Set to `false` in order to disable.
+
+#### compatibility ####
+
+"Quirk mode". Adds support for some polyfills and the way MSIE handles XDomainRequest. Default is `true`  
+Set to `false` in order to disable.
+
 ## Use as a library to serialize data for your own transmission ##
 
 ### Example ###
 
 ```javascript
-    sselib = require('sselib');
+    var sselib = require('sselib');
 
-    sselib.event("notice") // "event: notice\n"
-    sselib.data("Hello there!") // "data: Hello there!\n\n"
+    console.log(sselib.event("notice")); // "event: notice\n"
+    console.log(sselib.data("Hello there!")); // "data: Hello there!\n\n"
 
     // or:
     
