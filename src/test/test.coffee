@@ -1,5 +1,6 @@
 request = require 'supertest'
 connect = require 'connect'
+express = require 'express'
 sselib = require '../sselib'
 
 # Utils
@@ -8,6 +9,7 @@ Mock = ->
   @req.headers = {}
   @req.url = "http://example.com/" # fake the Url
   @req.headers['last-event-id'] = "keyboard-cat"
+  @req.headers.accept = 'text/event-stream'
   @res = {}
   @res.headers = {}
   @res.setHeader = (k, v) =>
@@ -15,6 +17,7 @@ Mock = ->
   @res.writeHead = (code, reason, headers) =>
 
   @res.once = ->
+  @res.end = ->
   @res.write = (chunk, encoding) ->
   this
 
@@ -33,14 +36,16 @@ SOCKET_INSTANCE_PROPERTIES_PUBLIC =
    'sendRaw',
    'req',
    'res',
-   'options']
+   'options',
+   'set',
+   'get']
 
 SOCKET_INSTANCE_PROPERTIES_PRIVATE =
   ['_processAndSendMessage',
    '_dispatchMessage',
    '_writeHeaders',
    '_keepAlive',
-    '_compatibility']
+   '_compatibility']
 
 SOCKET_INSTANCE_ALIASES =
   ['pub', 'publish', 'send']
@@ -232,25 +237,55 @@ describe 'Initialized SSE', ->
         instance.should.have.property(property)
         done()
 
-test = (app, signature) ->
-  describe signature, ->
-    describe 'when request "Accept" header text/event-stream', ->
+
+testMiddleware = (connectApp, expressApp) ->
+  describe "As middleware", ->
+    describe 'As connect middleware', ->
       it 'should respond and attach itself whenever seeing event-stream accept headers', (done) ->
-        request(app).get('/').set('Accept', 'text/event-stream').expect(200).expect('Content-Type', /text\/event-stream/).end (err, res) ->
+        request(connectApp).get('/').set('Accept', 'text/event-stream').expect(200).expect('Content-Type', /text\/event-stream/).end (err, res) ->
           return done(err) if err
           done()
+
+    describe 'As express middleware', ->
+      it 'should respond and attach itself whenever seeing event-stream accept headers', (done) ->
+        request(expressApp).get('/').set('Accept', 'text/event-stream').expect(200).expect('Content-Type', /text\/event-stream/).end (err, res) ->
+          return done(err) if err
+          done()
+
+    describe 'middleware API', ->
+      app = sselib.middleware()
+      mock = new Mock()
+
+      it 'should provide the sse property to res', (done) ->
+        app mock.req, mock.res, ->
+          mock.res.should.have.property('sse')
+          done()
+
+      SOCKET_INSTANCE_PROPERTIES_PUBLIC.forEach (property) ->
+        it "should provide the public property #{ property } under res.sse", (done) ->
+          app mock.req, mock.res, ->
+            mock.res.sse.should.have.property(property)
+            done()
+
+      SOCKET_INSTANCE_PROPERTIES_PRIVATE.forEach (property) ->
+        it "should provide the private property #{ property } under res.sse", (done) ->
+          app mock.req, mock.res, ->
+            mock.res.sse.should.have.property(property)
+            done()
+
+      SOCKET_INSTANCE_ALIASES.forEach (property) ->
+        it "should provide the alias #{ property } under res.sse", (done) ->
+          app mock.req, mock.res, ->
+            mock.res.sse.should.have.property(property)
+            done()
 
 sendTestMessage = (req, res, next) ->
   res.sse(testMessage)
   setTimeout (=> res.end()), 2*1000
   next()
 
-app = connect()
-app.use sselib.middleware(keepAlive: no, retry: 10*1000)
-app.use sendTestMessage
-test app, "As Middleware"
-
-app = connect()
-app.use sselib.middleware(keepAlive: 1*1000, retry: 10*1000)
-app.use sendTestMessage
-test app, "As Middleware with keep alive"
+connectApp = connect()
+connectApp.use sselib.middleware()
+expressApp = express()
+expressApp.use sselib.middleware()
+testMiddleware connectApp, expressApp
