@@ -93,9 +93,19 @@ describe('SSE', function() {
       sselib.data('cat').should.equal('data: cat\n\n');
       return done();
     });
-    return it('should return a valid data record to a optional callback', function(done) {
+    it('should return a valid data record to a optional callback', function(done) {
       sselib.data('cat', function(err, result) {
         return result.should.equal('data: cat\n\n');
+      });
+      return done();
+    });
+    it('should return a valid data record', function(done) {
+      sselib.data('cat\nmouse').should.equal('data: cat\ndata: mouse\n\n');
+      return done();
+    });
+    return it('should return a valid data record to a optional callback', function(done) {
+      sselib.data('cat\nmouse', function(err, result) {
+        return result.should.equal('data: cat\ndata: mouse\n\n');
       });
       return done();
     });

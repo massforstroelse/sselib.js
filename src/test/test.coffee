@@ -94,6 +94,14 @@ describe 'SSE', -> # add @message
         result.should.equal 'data: cat\n\n'
       done()
 
+    it 'should return a valid data record', (done) ->
+      sselib.data('cat\nmouse').should.equal 'data: cat\ndata: mouse\n\n'
+      done()
+    it 'should return a valid data record to a optional callback', (done) ->
+      sselib.data 'cat\nmouse', (err, result) ->
+        result.should.equal 'data: cat\ndata: mouse\n\n'
+      done()
+
   describe 'message()', ->
     it 'should serialize a JSON to valid SSE', (done) ->
       sselib.message(testMessage).should.equal 'id: 42\nevent: hi\ndata: yo\n\n'

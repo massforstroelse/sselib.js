@@ -37,9 +37,15 @@ class SSE extends EventEmitter
     if not callback then serialized else callback(error, serialized)
 
   @data: (data, callback) ->
-    unless typeCheck 'String', data
+    serialized = ''
+    unless typeCheck('String', data) and data?
       data = JSON.stringify(data)
-    serialized = if data then "data: #{ data }\n\n" else ''
+      serialized = if data then "data: #{ data }\n" else ''
+    else
+      data = data.split('\n')
+      for piece in data
+        serialized +=  "data: #{ piece }\n"
+    serialized += '\n' if serialized
     if not callback then serialized else callback(error, serialized)
 
   @message: (obj, callback) ->

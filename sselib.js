@@ -86,12 +86,22 @@ SSE = (function(_super) {
   };
 
   SSE.data = function(data, callback) {
-    var serialized;
+    var piece, serialized, _i, _len;
 
-    if (!typeCheck('String', data)) {
+    serialized = '';
+    if (!(typeCheck('String', data) && (data != null))) {
       data = JSON.stringify(data);
+      serialized = data ? "data: " + data + "\n" : '';
+    } else {
+      data = data.split('\n');
+      for (_i = 0, _len = data.length; _i < _len; _i++) {
+        piece = data[_i];
+        serialized += "data: " + piece + "\n";
+      }
     }
-    serialized = data ? "data: " + data + "\n\n" : '';
+    if (serialized) {
+      serialized += '\n';
+    }
     if (!callback) {
       return serialized;
     } else {
