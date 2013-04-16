@@ -324,7 +324,7 @@ middleware = function(req, res, options) {
   var callable, key, socket, value;
 
   callable = function(message) {
-    return this.sse.socket.publish(message);
+    return this.sse.publish(message);
   };
   socket = new SSE(req, res, options);
   for (key in socket) {
@@ -335,11 +335,6 @@ middleware = function(req, res, options) {
 };
 
 module.exports.middleware = function(options) {
-  /* Configuration, values in milliseconds
-  */
-  options.retry = (options != null ? options.retry : void 0) || 3 * 1000;
-  options.keepAlive = (options != null ? options.keepAlive : void 0) || 15 * 1000;
-  options.compatibility = (options != null ? options.compatibility : void 0) || true;
   return function(req, res, next) {
     if (req.headers.accept === "text/event-stream") {
       res.sse = middleware(req, res, options);
