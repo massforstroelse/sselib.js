@@ -87,7 +87,7 @@ Set to `false` in order to disable.
 
 #### compatibility ####
 
-"Quirk mode". Adds support for some polyfills and the way MSIE handles XDomainRequest. Default is `true`  
+"Quirks mode". Adds support for some polyfills and the way MSIE handles XDomainRequest. Default is `true`  
 Set to `false` in order to disable.
 
 ## Use as a library to serialize data for your own transmission ##
