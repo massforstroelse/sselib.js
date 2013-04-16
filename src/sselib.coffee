@@ -1,12 +1,12 @@
 {EventEmitter} = require 'events'
 
 error = null
-typeCheck = (type, obj) ->
+_typeCheck = (type, obj) ->
   cls = Object::toString.call(obj).slice(8, -1)
   obj isnt undefined and obj isnt null and cls is type
-extend = (origin, add) ->
+_extend = (origin, add) ->
   # Don't do anything if add isn't an object
-  return origin  if not add or not typeCheck('Object', add)
+  return origin  if not add or not _typeCheck('Object', add)
   keys = Object.keys(add)
   for key in keys
     origin[key] = add[key]
@@ -30,7 +30,7 @@ class SSE extends EventEmitter
     if not callback then serialized else callback(error, serialized)
 
   @id: (id, callback) ->
-    if typeCheck 'Function', id
+    if _typeCheck 'Function', id
         callback = id
         id = null
     serialized = "id: #{ if id then id else (new Date()).getTime() }\n"
@@ -38,7 +38,7 @@ class SSE extends EventEmitter
 
   @data: (data, callback) ->
     serialized = ''
-    unless typeCheck('String', data) and data?
+    unless _typeCheck('String', data) and data?
       data = JSON.stringify(data)
       serialized = if data then "data: #{ data }\n" else ''
     else
@@ -61,7 +61,7 @@ class SSE extends EventEmitter
     if not callback then headerDict else callback(error, headerDict)
 
   constructor: (@req, @res, @options = {}) ->
-    @options = extend(@constructor.defaultOptions, @options)
+    @options = _extend(@constructor.defaultOptions, @options)
     @_writeHeaders() unless @res.headersSent
     @emit 'connected'
     @sendRetry options.retry
@@ -102,11 +102,11 @@ class SSE extends EventEmitter
     @sendRaw @constructor.message(message)
 
   _dispatchMessage: (message) =>
-    if typeCheck 'Object', message
+    if _typeCheck 'Object', message
         @_processAndSendMessage(message)
-    else if typeCheck 'String', message
+    else if _typeCheck 'String', message
         @sendData message
-    else if typeCheck 'Array', message
+    else if _typeCheck 'Array', message
         message.forEach (msg) -> @_dispatchMessage(msg)
     else
       throw new Error("Unparsable message. (#{ message })")
@@ -126,12 +126,11 @@ SSE::send = SSE::_dispatchMessage
 
 module.exports = SSE
 
+### Connect/Express middleware ###
 middleware = (req, res, options) ->
   callable = (message) -> @sse.socekt.publish(message)
   callable.socket = new SSE(req, res, options)
   return callable
-
-### Connect/Express middleware ###
 module.exports.middleware = (options) ->
   ### Configuration, values in milliseconds ###
   options.retry = options?.retry or 3*1000
