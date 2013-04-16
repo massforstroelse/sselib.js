@@ -19,7 +19,7 @@ Install with npm:
 `sselib` can be used as a middleware for applications following the Connect convention.
 
 ### Example ###
-
+```javascript
     sselib = require('sselib');
     ...
     app.use(sselib.middleware());
@@ -33,11 +33,25 @@ Install with npm:
         );
         
     });
+```
+
+```coffeescript
+    sselib = require 'sselib'
+    ...
+    app.use sselib.middleware()
+    ...
+    app.get '/events', (req, res) ->
+      res.sse
+        id: 5364
+        event: 'update'
+        data: 'I am a stray cat.'
+```
 
 ## Use as a library to serialize data for your own transmission ##
 
 ### Example ###
 
+```javascript
     sselib = require('sselib');
 
     sselib.event("notice") // "event: notice\n"
@@ -53,6 +67,7 @@ Install with npm:
             }
         console.log(result) // "data: Hello there!\n\n"
         });
+```
 
 ### Serializers ###
 
@@ -84,11 +99,12 @@ Returns a `Object` containing valid HTTP-headers suitable for a `http.ServerResp
 
 ### Message Object ###
 
-![](http://dl.dropboxusercontent.com/u/15640279/massforstroelse-site/sselib-serialization-graph.png)
+[![sselib.message() graph](http://dl.dropboxusercontent.com/u/15640279/massforstroelse-site/sselib-serialization-graph.png)](https://npmjs.org/package/sselib)
 
 A `message object` is simply a javascript object containing the `data` and `event` keys, it can also optionally be given a `id` key.
 
 #### Example ####
+
     {event: 'update', data: 'I am a stray cat.'}
 
 ## License ##
