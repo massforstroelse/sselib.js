@@ -56,8 +56,6 @@ Install with npm:
 
 ### Serializers ###
 
-![](http://dl.dropboxusercontent.com/u/15640279/massforstroelse-site/sselib-serialization-graph.png)
-
 #### sselib.comment(comment [, callback]) ####
 
 Returns a SSE-serialized comment `string` representing a comment (please note that comments are invisible to browser clients).
@@ -86,10 +84,12 @@ Returns a `Object` containing valid HTTP-headers suitable for a `http.ServerResp
 
 ### Message Object ###
 
+![](http://dl.dropboxusercontent.com/u/15640279/massforstroelse-site/sselib-serialization-graph.png)
+
 A `message object` is simply a javascript object containing the `data` and `event` keys, it can also optionally be given a `id` key.
 
 #### Example ####
-    {id: 5364, event: 'update', data: 'I am a stray cat.'}
+    {event: 'update', data: 'I am a stray cat.'}
 
 ## License ##
 
