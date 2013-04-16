@@ -173,9 +173,17 @@ test = (app, signature) ->
           return done(err) if err
           done()
 
+sendTestMessage = (req, res, next) ->
+  res.sse(testMessage)
+  setTimeout (=> res.end()), 2*1000
+  next()
+
 app = connect()
 app.use sselib.middleware(keepAlive: no, retry: 10*1000)
-app.use (req, res, next) ->
-  res.sse(testMessage)
-  next()
+app.use sendTestMessage
 test app, "As Middleware"
+
+app = connect()
+app.use sselib.middleware(keepAlive: 1*1000, retry: 10*1000)
+app.use sendTestMessage
+test app, "As Middleware with keep alive"
