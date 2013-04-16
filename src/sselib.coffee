@@ -15,7 +15,7 @@ class SSE extends EventEmitter
   @defaultOptions =
     retry: 5*1000
     keepAlive: 15*1000
-    compatibility: no
+    compatibility: yes
 
   @comment: (comment, callback) ->
     serialized = ": #{ comment }\n\n"

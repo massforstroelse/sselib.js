@@ -36,7 +36,7 @@ SSE = (function(_super) {
   SSE.defaultOptions = {
     retry: 5 * 1000,
     keepAlive: 15 * 1000,
-    compatibility: false
+    compatibility: true
   };
 
   SSE.comment = function(comment, callback) {

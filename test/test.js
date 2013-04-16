@@ -165,7 +165,7 @@ describe('Initialized SSE', function() {
       return done();
     });
     return it('should have the default value for compatibility', function(done) {
-      instance.options.should.have.property('compatibility', false);
+      instance.options.should.have.property('compatibility', true);
       return done();
     });
   });
@@ -175,7 +175,7 @@ describe('Initialized SSE', function() {
     options = {
       keepAlive: false,
       retry: 10 * 1000,
-      compatibility: true
+      compatibility: false
     };
     mock = new Mock();
     instance = new sselib(mock.req, mock.res, options);
@@ -192,7 +192,7 @@ describe('Initialized SSE', function() {
       return done();
     });
     return it('should have the passed value for compatibility', function(done) {
-      instance.options.should.have.property('compatibility', true);
+      instance.options.should.have.property('compatibility', false);
       return done();
     });
   });

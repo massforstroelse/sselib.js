@@ -144,14 +144,14 @@ describe 'Initialized SSE', ->
         instance.options.should.have.property('retry', 5*1000)
         done()
       it 'should have the default value for compatibility', (done) ->
-        instance.options.should.have.property('compatibility', no)
+        instance.options.should.have.property('compatibility', yes)
         done()
 
   describe 'The options passed should take effect on the instance', ->
       options =
         keepAlive: no
         retry: 10*1000
-        compatibility: yes
+        compatibility: no
       mock = new Mock()
       instance = new sselib(mock.req, mock.res, options)
       it 'should have all the keys', (done) ->
@@ -166,7 +166,7 @@ describe 'Initialized SSE', ->
         instance.options.should.have.property('retry', 10*1000)
         done()
       it 'should have the passed value for compatibility', (done) ->
-        instance.options.should.have.property('compatibility', yes)
+        instance.options.should.have.property('compatibility', no)
         done()
 
 
