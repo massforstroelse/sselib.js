@@ -56,23 +56,25 @@ Install with npm:
 
 ### Serializers ###
 
-#### sselib.comment(comment, [callback]) ####
+![](http://dl.dropboxusercontent.com/u/15640279/massforstroelse-site/sselib-serialization-graph.png)
+
+#### sselib.comment(comment [, callback]) ####
 
 Returns a SSE-serialized comment `string` representing a comment (please note that comments are invisible to browser clients).
 
-#### sselib.event(event, [callback]) ####
+#### sselib.event(event [, callback]) ####
 
 Returns a SSE-serialized event `string` that can be used with a following `data` type to trigger a event in the browser.
 
-#### sselib.id([id], [callback]) ####
+#### sselib.id(id [, callback]) ####
 
 Returns a SSE-serialized id `string`. If called without `id` it will use a `UNIX timestamp` as the `id`.
 
-#### sselib.data(data, [callback]) ####
+#### sselib.data(data [, callback]) ####
 
 Returns a SSE-serialized data `string`.
 
-#### sselib.message(obj, [callback]) ####
+#### sselib.message(obj [, callback]) ####
 
 `message` is provided as a meta-serializer. It will return a SSE-serialized string from a message object you pass in.
 
