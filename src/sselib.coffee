@@ -155,17 +155,13 @@ module.exports = SSE
 
 ### Connect/Express middleware ###
 middleware = (req, res, options) ->
-  callable = (message) -> @sse.socket.publish(message)
+  callable = (message) -> @sse.publish(message)
   socket = new SSE(req, res, options)
   for key, value of socket
     callable[key] = value
   return callable
 
 module.exports.middleware = (options) ->
-  ### Configuration, values in milliseconds ###
-  options.retry = options?.retry or 3*1000
-  options.keepAlive = options?.keepAlive or 15*1000
-  options.compatibility = options?.compatibility or yes
   return (req, res, next) ->
     if req.headers.accept is "text/event-stream"
       res.sse = middleware(req, res, options)
