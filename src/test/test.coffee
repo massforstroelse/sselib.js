@@ -39,7 +39,8 @@ SOCKET_INSTANCE_PROPERTIES_PRIVATE =
   ['_processAndSendMessage',
    '_dispatchMessage',
    '_writeHeaders',
-   '_keepAlive']
+   '_keepAlive',
+    '_compatibility']
 
 SOCKET_INSTANCE_ALIASES =
   ['pub', 'publish', 'send']
@@ -167,6 +168,43 @@ describe 'Initialized SSE', ->
         done()
       it 'should have the passed value for compatibility', (done) ->
         instance.options.should.have.property('compatibility', no)
+        done()
+
+  describe 'The getter method should work', ->
+      options =
+        keepAlive: no
+        retry: 10*1000
+        compatibility: no
+      mock = new Mock()
+      instance = new sselib(mock.req, mock.res, options)
+      it 'should be able to get keepAlive', (done) ->
+        instance.get('keepAlive').should.eql no
+        done()
+
+      it 'should be able to get retry', (done) ->
+        instance.get('retry').should.eql 10*1000
+        done()
+
+      it 'should be able to get compatibility', (done) ->
+        instance.get('compatibility').should.eql no
+        done()
+
+  describe 'The setter method should work', ->
+      mock = new Mock()
+      instance = new sselib(mock.req, mock.res)
+      it 'should be able to set keepAlive', (done) ->
+        instance.set('keepAlive', 5000)
+        instance.get('keepAlive').should.eql 5000
+        done()
+
+      it 'should be able to set retry', (done) ->
+        instance.set('retry', 20000)
+        instance.get('retry').should.eql 20*1000
+        done()
+
+      it 'should be able to set compatibility', (done) ->
+        instance.set('compatibility', yes)
+        instance.get('compatibility').should.eql yes
         done()
 
 

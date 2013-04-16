@@ -61,25 +61,39 @@ class SSE extends EventEmitter
     if not callback then headerDict else callback(error, headerDict)
 
   constructor: (@req, @res, @options = {}) ->
+    #@constructor.emit 'connection', @
     @options = _extend(@options, @constructor.defaultOptions)
     @_writeHeaders() unless @res.headersSent
     @emit 'connected'
-    @sendRetry @options.retry if @options.retry
-    if @options.compatibility
-      ### XDomainRequest (MSIE8, MSIE9) ###
-      @sendComment Array(2049).join ' '
-      ### Remy Sharp's Polyfill support. ###
-      if @req.headers['x-requested-with'] is 'XMLHttpRequest'
-        @res.xhr = null
-
+    @sendRetry(@options.retry) if @options.retry
+    @_compatibility() if @options.compatibility
     @_keepAlive() if @options.keepAlive
     @lastEventId = @req.headers['last-event-id'] or null
     @emit 'reconnected' if @lastEventId
 
     @res.once 'close', =>
       clearTimeout @keepAliveTimer if @keepAliveTimer
-      @emit 'disconnected'
+      #@constructor.emit 'close', @
     @emit 'ready'
+
+  get: (option) =>
+    if option of @options
+      return @options[option]
+    else
+      throw new Error "Valid options are #{ (o for o of @options).join ',' }"
+
+  set: (option, value) ->
+    if option of @options
+      @options[option] = value
+      switch option
+        when 'retry' then @sendRetry @options.retry
+        when 'keepAlive'
+          @once 'keepAlive', =>
+            clearTimeout @keepAliveTimer if @keepAliveTimer
+            @_keepAlive()
+        when 'compatibility' then @_compatibility()
+    else
+      throw new Error "Valid options are #{ (o for o of @options).join ',' }"
 
   sendComment: (comment) =>
     @sendRaw @constructor.comment(comment)
@@ -120,8 +134,16 @@ class SSE extends EventEmitter
       setTimeout (=>
         @sendComment("keepalive #{ Date.now() }\n\n")
         @keepAliveTimer = schedule()
+        @emit 'keepAlive'
       ), @options.keepAlive
     @keepAliveTimer = schedule()
+
+  _compatibility: ->
+    ### XDomainRequest (MSIE8, MSIE9) ###
+    @sendComment Array(2049).join ' '
+    ### Remy Sharp's Polyfill support. ###
+    if @req.headers['x-requested-with'] is 'XMLHttpRequest'
+      @res.xhr = null
 
 
 ### Aliases ###
@@ -134,7 +156,9 @@ module.exports = SSE
 ### Connect/Express middleware ###
 middleware = (req, res, options) ->
   callable = (message) -> @sse.socket.publish(message)
-  callable.socket = new SSE(req, res, options)
+  socket = new SSE(req, res, options)
+  for key, value of socket
+    callable[key] = value
   return callable
 
 module.exports.middleware = (options) ->

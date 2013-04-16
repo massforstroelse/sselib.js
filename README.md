@@ -36,7 +36,6 @@ None, tested on node.js 0.6 >
     
     app.get('/events', function(req, res) {
       res.sse({
-        id: 5364,
         event: 'update',
         data: 'I am a stray cat.'
       });
@@ -58,7 +57,6 @@ None, tested on node.js 0.6 >
     
     app.get '/events', (req, res) ->
       res.sse
-        id: 5364
         event: 'update'
         data: 'I am a stray cat.'
 ```
@@ -74,6 +72,16 @@ You can pass options when initializing the middleware.
       compatibility: true
     });
 ```
+
+A already initialized socket can use `res.sse.socket.set` in order to set a new value for the option. Setting longer retry values and closing connections can be a effective strategy when servers are under high load.
+
+```javascript
+    app.get('/events', function(req, res) {
+      res.sse.set('retry', 30*1000);
+    });
+```
+
+`res.sse.get(option)` respectively gets the current configuration.
 
 #### retry ####
 
@@ -148,7 +156,7 @@ A `message object` is simply a javascript object containing the `data` and `even
 
 #### Example ####
 
-    {event: 'update', data: 'I am a stray cat.'}
+    {event: 'update', data: 'I am a stray cat.', id: 789}
 
 ## License ##
 

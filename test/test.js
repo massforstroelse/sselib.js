@@ -33,7 +33,7 @@ testMessage = {
 
 SOCKET_INSTANCE_PROPERTIES_PUBLIC = ['sendComment', 'sendRetry', 'sendEvent', 'sendId', 'sendData', 'sendRaw', 'req', 'res', 'options'];
 
-SOCKET_INSTANCE_PROPERTIES_PRIVATE = ['_processAndSendMessage', '_dispatchMessage', '_writeHeaders', '_keepAlive'];
+SOCKET_INSTANCE_PROPERTIES_PRIVATE = ['_processAndSendMessage', '_dispatchMessage', '_writeHeaders', '_keepAlive', '_compatibility'];
 
 SOCKET_INSTANCE_ALIASES = ['pub', 'publish', 'send'];
 
@@ -193,6 +193,50 @@ describe('Initialized SSE', function() {
     });
     return it('should have the passed value for compatibility', function(done) {
       instance.options.should.have.property('compatibility', false);
+      return done();
+    });
+  });
+  describe('The getter method should work', function() {
+    var instance, mock, options;
+
+    options = {
+      keepAlive: false,
+      retry: 10 * 1000,
+      compatibility: false
+    };
+    mock = new Mock();
+    instance = new sselib(mock.req, mock.res, options);
+    it('should be able to get keepAlive', function(done) {
+      instance.get('keepAlive').should.eql(false);
+      return done();
+    });
+    it('should be able to get retry', function(done) {
+      instance.get('retry').should.eql(10 * 1000);
+      return done();
+    });
+    return it('should be able to get compatibility', function(done) {
+      instance.get('compatibility').should.eql(false);
+      return done();
+    });
+  });
+  describe('The setter method should work', function() {
+    var instance, mock;
+
+    mock = new Mock();
+    instance = new sselib(mock.req, mock.res);
+    it('should be able to set keepAlive', function(done) {
+      instance.set('keepAlive', 5000);
+      instance.get('keepAlive').should.eql(5000);
+      return done();
+    });
+    it('should be able to set retry', function(done) {
+      instance.set('retry', 20000);
+      instance.get('retry').should.eql(20 * 1000);
+      return done();
+    });
+    return it('should be able to set compatibility', function(done) {
+      instance.set('compatibility', true);
+      instance.get('compatibility').should.eql(true);
       return done();
     });
   });

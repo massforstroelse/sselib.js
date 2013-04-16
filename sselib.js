@@ -151,6 +151,7 @@ SSE = (function(_super) {
     this.sendEvent = __bind(this.sendEvent, this);
     this.sendRetry = __bind(this.sendRetry, this);
     this.sendComment = __bind(this.sendComment, this);
+    this.get = __bind(this.get, this);
     this.options = _extend(this.options, this.constructor.defaultOptions);
     if (!this.res.headersSent) {
       this._writeHeaders();
@@ -160,16 +161,7 @@ SSE = (function(_super) {
       this.sendRetry(this.options.retry);
     }
     if (this.options.compatibility) {
-      /* XDomainRequest (MSIE8, MSIE9)
-      */
-
-      this.sendComment(Array(2049).join(' '));
-      /* Remy Sharp's Polyfill support.
-      */
-
-      if (this.req.headers['x-requested-with'] === 'XMLHttpRequest') {
-        this.res.xhr = null;
-      }
+      this._compatibility();
     }
     if (this.options.keepAlive) {
       this._keepAlive();
@@ -180,12 +172,61 @@ SSE = (function(_super) {
     }
     this.res.once('close', function() {
       if (_this.keepAliveTimer) {
-        clearTimeout(_this.keepAliveTimer);
+        return clearTimeout(_this.keepAliveTimer);
       }
-      return _this.emit('disconnected');
     });
     this.emit('ready');
   }
+
+  SSE.prototype.get = function(option) {
+    var o;
+
+    if (option in this.options) {
+      return this.options[option];
+    } else {
+      throw new Error("Valid options are " + (((function() {
+        var _results;
+
+        _results = [];
+        for (o in this.options) {
+          _results.push(o);
+        }
+        return _results;
+      }).call(this)).join(',')));
+    }
+  };
+
+  SSE.prototype.set = function(option, value) {
+    var o,
+      _this = this;
+
+    if (option in this.options) {
+      this.options[option] = value;
+      switch (option) {
+        case 'retry':
+          return this.sendRetry(this.options.retry);
+        case 'keepAlive':
+          return this.once('keepAlive', function() {
+            if (_this.keepAliveTimer) {
+              clearTimeout(_this.keepAliveTimer);
+            }
+            return _this._keepAlive();
+          });
+        case 'compatibility':
+          return this._compatibility();
+      }
+    } else {
+      throw new Error("Valid options are " + (((function() {
+        var _results;
+
+        _results = [];
+        for (o in this.options) {
+          _results.push(o);
+        }
+        return _results;
+      }).call(this)).join(',')));
+    }
+  };
 
   SSE.prototype.sendComment = function(comment) {
     return this.sendRaw(this.constructor.comment(comment));
@@ -240,10 +281,23 @@ SSE = (function(_super) {
     schedule = function() {
       return setTimeout((function() {
         _this.sendComment("keepalive " + (Date.now()) + "\n\n");
-        return _this.keepAliveTimer = schedule();
+        _this.keepAliveTimer = schedule();
+        return _this.emit('keepAlive');
       }), _this.options.keepAlive);
     };
     return this.keepAliveTimer = schedule();
+  };
+
+  SSE.prototype._compatibility = function() {
+    /* XDomainRequest (MSIE8, MSIE9)
+    */
+    this.sendComment(Array(2049).join(' '));
+    /* Remy Sharp's Polyfill support.
+    */
+
+    if (this.req.headers['x-requested-with'] === 'XMLHttpRequest') {
+      return this.res.xhr = null;
+    }
   };
 
   return SSE;
@@ -267,12 +321,16 @@ module.exports = SSE;
 
 
 middleware = function(req, res, options) {
-  var callable;
+  var callable, key, socket, value;
 
   callable = function(message) {
     return this.sse.socket.publish(message);
   };
-  callable.socket = new SSE(req, res, options);
+  socket = new SSE(req, res, options);
+  for (key in socket) {
+    value = socket[key];
+    callable[key] = value;
+  }
   return callable;
 };
 
