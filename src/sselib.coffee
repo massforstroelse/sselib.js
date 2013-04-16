@@ -78,12 +78,7 @@ class SSE extends EventEmitter
     @res.once 'close', =>
       clearInterval @intervalId if @intervalId
       @emit 'disconnected'
-
-    callable = (message) =>
-      @publish(message)
-    callable.socket = @
     @emit 'ready'
-    return callable
 
   sendComment: (comment) =>
     @sendRaw @constructor.comment(comment)
@@ -131,6 +126,11 @@ SSE::send = SSE::_dispatchMessage
 
 module.exports = SSE
 
+middleware = (req, res, options) ->
+  callable = (message) -> @sse.socekt.publish(message)
+  callable.socket = new SSE(req, res, options)
+  return callable
+
 ### Connect/Express middleware ###
 module.exports.middleware = (options) ->
   ### Configuration, values in milliseconds ###
@@ -138,5 +138,5 @@ module.exports.middleware = (options) ->
   options.keepAlive = options?.keepAlive or 15*1000
   return (req, res, next) ->
     if req.headers.accept is "text/event-stream"
-      res.sse = new SSE(req, res, options)
+      res.sse = middleware(req, res, options)
     next()

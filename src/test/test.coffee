@@ -136,33 +136,33 @@ describe 'Initialized SSE', ->
 
   describe 'The options passed should take effect on the instance', ->
       it 'should have all the keys', (done) ->
-        instance.socket.options.should.have.keys(SOCKET_INSTANCE_OPTIONS_KEYS)
+        instance.options.should.have.keys(SOCKET_INSTANCE_OPTIONS_KEYS)
         done()
 
       it 'should have the passed value for keepAlive', (done) ->
-        instance.socket.options.should.have.property('keepAlive', false)
+        instance.options.should.have.property('keepAlive', false)
         done()
 
       it 'should have the default value for retry', (done) ->
-        instance.socket.options.should.have.property('retry', 5*1000)
+        instance.options.should.have.property('retry', 5*1000)
         done()
 
   describe 'The socket object should have all the public properties', ->
     SOCKET_INSTANCE_PROPERTIES_PUBLIC.forEach (property) ->
       it "should have #{ property }", (done) ->
-        instance.socket.should.have.property(property)
+        instance.should.have.property(property)
         done()
   
   describe 'The socket object should have all the private properties', ->
     SOCKET_INSTANCE_PROPERTIES_PRIVATE.forEach (property) ->
       it "should have #{ property }", (done) ->
-        instance.socket.should.have.property(property)
+        instance.should.have.property(property)
         done()
   
   describe 'The socket object should have all the aliases', ->
     SOCKET_INSTANCE_ALIASES.forEach (property) ->
       it "should have #{ property }", (done) ->
-        instance.socket.should.have.property(property)
+        instance.should.have.property(property)
         done()
 
 test = (app, signature) ->
