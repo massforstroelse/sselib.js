@@ -64,7 +64,7 @@ class SSE extends EventEmitter
     @options = _extend(@constructor.defaultOptions, @options)
     @_writeHeaders() unless @res.headersSent
     @emit 'connected'
-    @sendRetry options.retry
+    @sendRetry options.retry if options.retry
     ### XDomainRequest (MSIE8, MSIE9) ###
     @sendComment Array(2049).join ' '
     @_keepAlive() if @options.keepAlive

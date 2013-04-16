@@ -154,7 +154,9 @@ SSE = (function(_super) {
       this._writeHeaders();
     }
     this.emit('connected');
-    this.sendRetry(options.retry);
+    if (options.retry) {
+      this.sendRetry(options.retry);
+    }
     /* XDomainRequest (MSIE8, MSIE9)
     */
 
