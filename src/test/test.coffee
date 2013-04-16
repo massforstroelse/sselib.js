@@ -45,7 +45,7 @@ SOCKET_INSTANCE_ALIASES =
   ['pub', 'publish', 'send']
 
 SOCKET_INSTANCE_OPTIONS_KEYS =
-  ['keepAlive', 'retry']
+  ['keepAlive', 'retry', 'compatibility']
 
 # Let's begin testing!
 describe 'SSE', -> # add @message
@@ -129,37 +129,66 @@ describe 'SSE', -> # add @message
       done()
 
 describe 'Initialized SSE', ->
-  options =
-    keepAlive: no
-  mock = new Mock()
-  instance = new sselib(mock.req, mock.res, options)
-
-  describe 'The options passed should take effect on the instance', ->
+  describe 'The @options should be populated with default values', ->
+      mock = new Mock()
+      instance = new sselib(mock.req, mock.res)
       it 'should have all the keys', (done) ->
         instance.options.should.have.keys(SOCKET_INSTANCE_OPTIONS_KEYS)
         done()
 
-      it 'should have the passed value for keepAlive', (done) ->
-        instance.options.should.have.property('keepAlive', false)
+      it 'should have the default value for keepAlive', (done) ->
+        instance.options.should.have.property('keepAlive', 15*1000)
         done()
 
       it 'should have the default value for retry', (done) ->
         instance.options.should.have.property('retry', 5*1000)
         done()
+      it 'should have the default value for compatibility', (done) ->
+        instance.options.should.have.property('compatibility', no)
+        done()
+
+  describe 'The options passed should take effect on the instance', ->
+      options =
+        keepAlive: no
+        retry: 10*1000
+        compatibility: yes
+      mock = new Mock()
+      instance = new sselib(mock.req, mock.res, options)
+      it 'should have all the keys', (done) ->
+        instance.options.should.have.keys(SOCKET_INSTANCE_OPTIONS_KEYS)
+        done()
+
+      it 'should have the passed value for keepAlive', (done) ->
+        instance.options.should.have.property('keepAlive', no)
+        done()
+
+      it 'should have the passed value for retry', (done) ->
+        instance.options.should.have.property('retry', 10*1000)
+        done()
+      it 'should have the passed value for compatibility', (done) ->
+        instance.options.should.have.property('compatibility', yes)
+        done()
+
 
   describe 'The socket object should have all the public properties', ->
+    mock = new Mock()
+    instance = new sselib(mock.req, mock.res)
     SOCKET_INSTANCE_PROPERTIES_PUBLIC.forEach (property) ->
       it "should have #{ property }", (done) ->
         instance.should.have.property(property)
         done()
   
   describe 'The socket object should have all the private properties', ->
+    mock = new Mock()
+    instance = new sselib(mock.req, mock.res)
     SOCKET_INSTANCE_PROPERTIES_PRIVATE.forEach (property) ->
       it "should have #{ property }", (done) ->
         instance.should.have.property(property)
         done()
   
   describe 'The socket object should have all the aliases', ->
+    mock = new Mock()
+    instance = new sselib(mock.req, mock.res)
     SOCKET_INSTANCE_ALIASES.forEach (property) ->
       it "should have #{ property }", (done) ->
         instance.should.have.property(property)

@@ -15,16 +15,17 @@ _typeCheck = function(type, obj) {
   return obj !== void 0 && obj !== null && cls === type;
 };
 
-_extend = function(origin, add) {
-  var key, keys, _i, _len;
+_extend = function(origin, extension) {
+  var key, value;
 
-  if (!add || !_typeCheck('Object', add)) {
+  if (!extension || !_typeCheck('Object', extension)) {
     return origin;
   }
-  keys = Object.keys(add);
-  for (_i = 0, _len = keys.length; _i < _len; _i++) {
-    key = keys[_i];
-    origin[key] = add[key];
+  for (key in extension) {
+    value = extension[key];
+    if (origin[key] == null) {
+      origin[key] = value;
+    }
   }
   return origin;
 };
@@ -34,7 +35,8 @@ SSE = (function(_super) {
 
   SSE.defaultOptions = {
     retry: 5 * 1000,
-    keepAlive: 15 * 1000
+    keepAlive: 15 * 1000,
+    compatibility: false
   };
 
   SSE.comment = function(comment, callback) {
@@ -149,34 +151,36 @@ SSE = (function(_super) {
     this.sendEvent = __bind(this.sendEvent, this);
     this.sendRetry = __bind(this.sendRetry, this);
     this.sendComment = __bind(this.sendComment, this);
-    this.options = _extend(this.constructor.defaultOptions, this.options);
+    this.options = _extend(this.options, this.constructor.defaultOptions);
     if (!this.res.headersSent) {
       this._writeHeaders();
     }
     this.emit('connected');
-    if (options.retry) {
-      this.sendRetry(options.retry);
+    if (this.options.retry) {
+      this.sendRetry(this.options.retry);
     }
-    /* XDomainRequest (MSIE8, MSIE9)
-    */
+    if (this.options.compatibility) {
+      /* XDomainRequest (MSIE8, MSIE9)
+      */
 
-    this.sendComment(Array(2049).join(' '));
+      this.sendComment(Array(2049).join(' '));
+      /* Remy Sharp's Polyfill support.
+      */
+
+      if (this.req.headers['x-requested-with'] === 'XMLHttpRequest') {
+        this.res.xhr = null;
+      }
+    }
     if (this.options.keepAlive) {
       this._keepAlive();
-    }
-    /* Remy Sharp's Polyfill support.
-    */
-
-    if (this.req.headers['x-requested-with'] === 'XMLHttpRequest') {
-      this.res.xhr = null;
     }
     this.lastEventId = this.req.headers['last-event-id'] || null;
     if (this.lastEventId) {
       this.emit('reconnected');
     }
     this.res.once('close', function() {
-      if (_this.intervalId) {
-        clearInterval(_this.intervalId);
+      if (_this.keepAliveTimer) {
+        clearTimeout(_this.keepAliveTimer);
       }
       return _this.emit('disconnected');
     });
@@ -230,17 +234,16 @@ SSE = (function(_super) {
   };
 
   SSE.prototype._keepAlive = function() {
-    var schedule;
+    var schedule,
+      _this = this;
 
     schedule = function() {
-      var _this = this;
-
       return setTimeout((function() {
         _this.sendComment("keepalive " + (Date.now()) + "\n\n");
-        return _this.intervalId = schedule();
-      }), this.options.keepAlive);
+        return _this.keepAliveTimer = schedule();
+      }), _this.options.keepAlive);
     };
-    return this.intervalId = schedule();
+    return this.keepAliveTimer = schedule();
   };
 
   return SSE;
@@ -278,6 +281,7 @@ module.exports.middleware = function(options) {
   */
   options.retry = (options != null ? options.retry : void 0) || 3 * 1000;
   options.keepAlive = (options != null ? options.keepAlive : void 0) || 15 * 1000;
+  options.compatibility = (options != null ? options.compatibility : void 0) || true;
   return function(req, res, next) {
     if (req.headers.accept === "text/event-stream") {
       res.sse = middleware(req, res, options);

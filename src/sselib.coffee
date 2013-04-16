@@ -4,18 +4,18 @@ error = null
 _typeCheck = (type, obj) ->
   cls = Object::toString.call(obj).slice(8, -1)
   obj isnt undefined and obj isnt null and cls is type
-_extend = (origin, add) ->
-  # Don't do anything if add isn't an object
-  return origin  if not add or not _typeCheck('Object', add)
-  keys = Object.keys(add)
-  for key in keys
-    origin[key] = add[key]
+_extend = (origin, extension) ->
+  # Don't do anything if extension isn't an object
+  return origin if not extension or not _typeCheck('Object', extension)
+  for key, value of extension
+    origin[key] = value unless origin[key]?
   origin
 
 class SSE extends EventEmitter
   @defaultOptions =
     retry: 5*1000
     keepAlive: 15*1000
+    compatibility: no
 
   @comment: (comment, callback) ->
     serialized = ": #{ comment }\n\n"
@@ -61,22 +61,23 @@ class SSE extends EventEmitter
     if not callback then headerDict else callback(error, headerDict)
 
   constructor: (@req, @res, @options = {}) ->
-    @options = _extend(@constructor.defaultOptions, @options)
+    @options = _extend(@options, @constructor.defaultOptions)
     @_writeHeaders() unless @res.headersSent
     @emit 'connected'
-    @sendRetry options.retry if options.retry
-    ### XDomainRequest (MSIE8, MSIE9) ###
-    @sendComment Array(2049).join ' '
-    @_keepAlive() if @options.keepAlive
-    ### Remy Sharp's Polyfill support. ###
-    if @req.headers['x-requested-with'] is 'XMLHttpRequest'
-      @res.xhr = null
+    @sendRetry @options.retry if @options.retry
+    if @options.compatibility
+      ### XDomainRequest (MSIE8, MSIE9) ###
+      @sendComment Array(2049).join ' '
+      ### Remy Sharp's Polyfill support. ###
+      if @req.headers['x-requested-with'] is 'XMLHttpRequest'
+        @res.xhr = null
 
+    @_keepAlive() if @options.keepAlive
     @lastEventId = @req.headers['last-event-id'] or null
     @emit 'reconnected' if @lastEventId
 
     @res.once 'close', =>
-      clearInterval @intervalId if @intervalId
+      clearTimeout @keepAliveTimer if @keepAliveTimer
       @emit 'disconnected'
     @emit 'ready'
 
@@ -115,12 +116,12 @@ class SSE extends EventEmitter
     @res.writeHead 200, 'OK', @constructor.headers()
 
   _keepAlive: ->
-    schedule = ->
+    schedule = =>
       setTimeout (=>
         @sendComment("keepalive #{ Date.now() }\n\n")
-        @intervalId = schedule()
+        @keepAliveTimer = schedule()
       ), @options.keepAlive
-    @intervalId = schedule()
+    @keepAliveTimer = schedule()
 
 
 ### Aliases ###
@@ -140,6 +141,7 @@ module.exports.middleware = (options) ->
   ### Configuration, values in milliseconds ###
   options.retry = options?.retry or 3*1000
   options.keepAlive = options?.keepAlive or 15*1000
+  options.compatibility = options?.compatibility or yes
   return (req, res, next) ->
     if req.headers.accept is "text/event-stream"
       res.sse = middleware(req, res, options)

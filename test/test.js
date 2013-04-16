@@ -37,7 +37,7 @@ SOCKET_INSTANCE_PROPERTIES_PRIVATE = ['_processAndSendMessage', '_dispatchMessag
 
 SOCKET_INSTANCE_ALIASES = ['pub', 'publish', 'send'];
 
-SOCKET_INSTANCE_OPTIONS_KEYS = ['keepAlive', 'retry'];
+SOCKET_INSTANCE_OPTIONS_KEYS = ['keepAlive', 'retry', 'compatibility'];
 
 describe('SSE', function() {
   describe('comment()', function() {
@@ -147,14 +147,38 @@ describe('SSE', function() {
 });
 
 describe('Initialized SSE', function() {
-  var instance, mock, options;
+  describe('The @options should be populated with default values', function() {
+    var instance, mock;
 
-  options = {
-    keepAlive: false
-  };
-  mock = new Mock();
-  instance = new sselib(mock.req, mock.res, options);
+    mock = new Mock();
+    instance = new sselib(mock.req, mock.res);
+    it('should have all the keys', function(done) {
+      instance.options.should.have.keys(SOCKET_INSTANCE_OPTIONS_KEYS);
+      return done();
+    });
+    it('should have the default value for keepAlive', function(done) {
+      instance.options.should.have.property('keepAlive', 15 * 1000);
+      return done();
+    });
+    it('should have the default value for retry', function(done) {
+      instance.options.should.have.property('retry', 5 * 1000);
+      return done();
+    });
+    return it('should have the default value for compatibility', function(done) {
+      instance.options.should.have.property('compatibility', false);
+      return done();
+    });
+  });
   describe('The options passed should take effect on the instance', function() {
+    var instance, mock, options;
+
+    options = {
+      keepAlive: false,
+      retry: 10 * 1000,
+      compatibility: true
+    };
+    mock = new Mock();
+    instance = new sselib(mock.req, mock.res, options);
     it('should have all the keys', function(done) {
       instance.options.should.have.keys(SOCKET_INSTANCE_OPTIONS_KEYS);
       return done();
@@ -163,12 +187,20 @@ describe('Initialized SSE', function() {
       instance.options.should.have.property('keepAlive', false);
       return done();
     });
-    return it('should have the default value for retry', function(done) {
-      instance.options.should.have.property('retry', 5 * 1000);
+    it('should have the passed value for retry', function(done) {
+      instance.options.should.have.property('retry', 10 * 1000);
+      return done();
+    });
+    return it('should have the passed value for compatibility', function(done) {
+      instance.options.should.have.property('compatibility', true);
       return done();
     });
   });
   describe('The socket object should have all the public properties', function() {
+    var instance, mock;
+
+    mock = new Mock();
+    instance = new sselib(mock.req, mock.res);
     return SOCKET_INSTANCE_PROPERTIES_PUBLIC.forEach(function(property) {
       return it("should have " + property, function(done) {
         instance.should.have.property(property);
@@ -177,6 +209,10 @@ describe('Initialized SSE', function() {
     });
   });
   describe('The socket object should have all the private properties', function() {
+    var instance, mock;
+
+    mock = new Mock();
+    instance = new sselib(mock.req, mock.res);
     return SOCKET_INSTANCE_PROPERTIES_PRIVATE.forEach(function(property) {
       return it("should have " + property, function(done) {
         instance.should.have.property(property);
@@ -185,6 +221,10 @@ describe('Initialized SSE', function() {
     });
   });
   return describe('The socket object should have all the aliases', function() {
+    var instance, mock;
+
+    mock = new Mock();
+    instance = new sselib(mock.req, mock.res);
     return SOCKET_INSTANCE_ALIASES.forEach(function(property) {
       return it("should have " + property, function(done) {
         instance.should.have.property(property);
