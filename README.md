@@ -73,7 +73,7 @@ You can pass options when initializing the middleware.
     });
 ```
 
-A already initialized socket can use `res.sse.socket.set` in order to set a new value for the option. Setting longer retry values and closing connections can be a effective strategy when servers are under high load.
+A already initialized connection can use `res.sse.set` in order to set a new value for the option. Setting longer retry values and closing connections can be a effective strategy when servers are under high load.
 
 ```javascript
     app.get('/events', function(req, res) {
