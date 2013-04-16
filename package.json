@@ -19,7 +19,8 @@
     "mocha": "1.9.x",
     "should": "1.2.x",
     "connect": "~2.7.4",
-    "supertest": "~0.5.1"
+    "supertest": "~0.5.1",
+    "express": "~3.2.0"
   },
   "licenses": [
     {
