@@ -156,22 +156,22 @@ describe('Initialized SSE', function() {
   instance = new sselib(mock.req, mock.res, options);
   describe('The options passed should take effect on the instance', function() {
     it('should have all the keys', function(done) {
-      instance.socket.options.should.have.keys(SOCKET_INSTANCE_OPTIONS_KEYS);
+      instance.options.should.have.keys(SOCKET_INSTANCE_OPTIONS_KEYS);
       return done();
     });
     it('should have the passed value for keepAlive', function(done) {
-      instance.socket.options.should.have.property('keepAlive', false);
+      instance.options.should.have.property('keepAlive', false);
       return done();
     });
     return it('should have the default value for retry', function(done) {
-      instance.socket.options.should.have.property('retry', 5 * 1000);
+      instance.options.should.have.property('retry', 5 * 1000);
       return done();
     });
   });
   describe('The socket object should have all the public properties', function() {
     return SOCKET_INSTANCE_PROPERTIES_PUBLIC.forEach(function(property) {
       return it("should have " + property, function(done) {
-        instance.socket.should.have.property(property);
+        instance.should.have.property(property);
         return done();
       });
     });
@@ -179,7 +179,7 @@ describe('Initialized SSE', function() {
   describe('The socket object should have all the private properties', function() {
     return SOCKET_INSTANCE_PROPERTIES_PRIVATE.forEach(function(property) {
       return it("should have " + property, function(done) {
-        instance.socket.should.have.property(property);
+        instance.should.have.property(property);
         return done();
       });
     });
@@ -187,7 +187,7 @@ describe('Initialized SSE', function() {
   return describe('The socket object should have all the aliases', function() {
     return SOCKET_INSTANCE_ALIASES.forEach(function(property) {
       return it("should have " + property, function(done) {
-        instance.socket.should.have.property(property);
+        instance.should.have.property(property);
         return done();
       });
     });
