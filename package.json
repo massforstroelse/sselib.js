@@ -1,14 +1,18 @@
 {
   "name": "sselib",
-  "description": "SSE (Server Sent Events) middleware for connect.",
-  "version": "0.0.2",
+  "description": "SSE (Server Sent Events) library and middleware.",
+  "version": "0.0.3",
   "author": "Daniel Waardal <daniel@massforstroel.se>",
   "keywords": [
     "sse",
     "server sent events",
     "connect",
     "express",
-    "eventsource"
+    "eventsource",
+    "pubsub",
+    "middleware",
+    "connect",
+    "express"
   ],
   "devDependencies": {
     "coffee-script": ">=1.6.2",
