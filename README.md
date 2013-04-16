@@ -35,14 +35,13 @@ None, tested on node.js 0.6 >
     app.use(sselib.middleware());
     
     app.get('/events', function(req, res) {
-        res.sse(
-            {id: 5364,
-             event: 'update',
-             data: 'I am a stray cat.'
-            }
-        );
+        res.sse({
+            id: 5364,
+            event: 'update',
+            data: 'I am a stray cat.'
+            });
         
-    });
+        });
 
     app.listen(3000);
 ```
