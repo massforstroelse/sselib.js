@@ -19,6 +19,9 @@ Install with npm:
 `sselib` can be used as a middleware for applications following the Connect convention.
 
 ### Example ###
+
+#### Javascript ####
+
 ```javascript
     sselib = require('sselib');
     ...
@@ -34,6 +37,8 @@ Install with npm:
         
     });
 ```
+
+#### Coffeescript ####
 
 ```coffeescript
     sselib = require 'sselib'
