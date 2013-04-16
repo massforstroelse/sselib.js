@@ -35,13 +35,13 @@ None, tested on node.js 0.6 >
     app.use(sselib.middleware());
     
     app.get('/events', function(req, res) {
-        res.sse({
-            id: 5364,
-            event: 'update',
-            data: 'I am a stray cat.'
-            });
+      res.sse({
+        id: 5364,
+        event: 'update',
+        data: 'I am a stray cat.'
+      });
         
-        });
+    });
 
     app.listen(3000);
 ```
@@ -69,9 +69,9 @@ You can pass options when initializing the middleware.
 
 ```javascript
     app.use(sselib.middleware({
-        retry: 5*1000,
-        keepAlive: 15*1000,
-        compatibility: true
+      retry: 5*1000,
+      keepAlive: 15*1000,
+      compatibility: true
     });
 ```
 
@@ -103,13 +103,13 @@ Set to `false` in order to disable.
     // or:
     
     sselib.data("Hello there!", function(err, result) {
-        if (err) {
-            // handle the error safely
-            console.log(err);
-            return;
-            }
-        console.log(result) // "data: Hello there!\n\n"
-        });
+      if (err) {
+        // print the error to console
+        console.log(err);
+        return;
+      }
+      console.log(result) // "data: Hello there!\n\n"
+    });
 ```
 
 ### Serializers ###
