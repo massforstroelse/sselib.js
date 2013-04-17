@@ -10,7 +10,6 @@
 0.0.4
 =====
 
-  * buckle up for release
   * adding express as a dev dep
   * adding tests for middleware instance
   * placing instance vars directly under res.sse for middleware
@@ -19,7 +18,6 @@
 0.0.3
 =====
 
-  * preparing for release
   * added options.compatibility, this closes [#9](https://github.com/massforstroelse/sselib.js/issues/9)
   * retry can be set to false, then no initial retry message will be sent to the client. This closes [#5](https://github.com/massforstroelse/sselib.js/issues/5)
   * _ prepending internal utils
@@ -36,9 +34,6 @@
 0.0.1
 =====
 
-  * preparing for release
-  * fixing typo
-  * updated readme
   * implementing error as first arg in callbacks
   * added callbacks to message types
   * using versions instead of latest in npm deps
