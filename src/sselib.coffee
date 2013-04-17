@@ -1,15 +1,19 @@
 {EventEmitter} = require 'events'
 
 error = null
-_typeCheck = (type, obj) ->
+
+_utils = {} # utils ns
+_utils.typeCheck = (type, obj) ->
   cls = Object::toString.call(obj).slice(8, -1)
   obj isnt undefined and obj isnt null and cls is type
-_extend = (origin, extension) ->
+_utils.extend = (origin, extension) ->
   # Don't do anything if extension isn't an object
-  return origin if not extension or not _typeCheck('Object', extension)
+  return origin if not extension or not _utils.typeCheck('Object', extension)
   for key, value of extension
     origin[key] = value unless origin[key]?
   origin
+
+module.exports.utils = _utils
 
 class SSE extends EventEmitter
   @defaultOptions =
@@ -30,7 +34,7 @@ class SSE extends EventEmitter
     if not callback then serialized else callback(error, serialized)
 
   @id: (id, callback) ->
-    if _typeCheck 'Function', id
+    if _utils.typeCheck 'Function', id
         callback = id
         id = null
     serialized = "id: #{ if id then id else (new Date()).getTime() }\n"
@@ -38,7 +42,7 @@ class SSE extends EventEmitter
 
   @data: (data, callback) ->
     serialized = ''
-    unless _typeCheck('String', data) and data?
+    unless _utils.typeCheck('String', data) and data?
       data = JSON.stringify(data)
       serialized = if data then "data: #{ data }\n" else ''
     else
@@ -62,7 +66,7 @@ class SSE extends EventEmitter
 
   constructor: (@req, @res, @options = {}) ->
     #@constructor.emit 'connection', @
-    @options = _extend(@options, @constructor.defaultOptions)
+    @options = _utils.extend(@options, @constructor.defaultOptions)
     @_writeHeaders() unless @res.headersSent
     @emit 'connected'
     @sendRetry(@options.retry) if @options.retry
@@ -117,11 +121,11 @@ class SSE extends EventEmitter
     @sendRaw @constructor.message(message)
 
   _dispatchMessage: (message) =>
-    if _typeCheck 'Object', message
+    if _utils.typeCheck 'Object', message
         @_processAndSendMessage(message)
-    else if _typeCheck 'String', message
+    else if _utils.typeCheck 'String', message
         @sendData message
-    else if _typeCheck 'Array', message
+    else if _utils.typeCheck 'Array', message
         message.forEach (msg) -> @_dispatchMessage(msg)
     else
       throw new Error("Unparsable message. (#{ message })")
