@@ -339,6 +339,8 @@ module.exports.middleware = function(options) {
     if (req.headers.accept === "text/event-stream") {
       res.sse = middleware(req, res, options);
     }
-    return next();
+    if (next != null) {
+      return next();
+    }
   };
 };
