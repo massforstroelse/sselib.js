@@ -1,7 +1,7 @@
 {
   "name": "sselib",
   "description": "SSE (Server Sent Events) library and middleware.",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "Daniel Waardal <daniel@massforstroel.se>",
   "keywords": [
     "sse",
@@ -41,5 +41,8 @@
     "test": "make test",
     "compile": "make compile",
     "build": "make prepare"
+  },
+  "engines": {
+    "node": "*"
   }
 }
