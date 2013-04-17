@@ -51,7 +51,7 @@ SOCKET_INSTANCE_ALIASES = ['pub', 'publish', 'send'];
 
 SOCKET_INSTANCE_OPTIONS_KEYS = ['keepAlive', 'retry', 'compatibility'];
 
-MIDDLEWARE_INSTANCE_PROPERTIES = ['sendComment', 'sendRetry', 'sendEvent', 'sendId', 'sendData', 'sendRaw', 'set', 'get', 'toString', 'send'];
+MIDDLEWARE_INSTANCE_PROPERTIES = ['sendComment', 'sendRetry', 'sendEvent', 'sendId', 'sendData', 'sendRaw', 'set', 'get', 'toString'];
 
 describe('SSE', function() {
   describe('comment()', function() {
