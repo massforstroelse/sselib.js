@@ -1,3 +1,8 @@
+0.0.7
+=====
+
+  * using response.setHeader instead of writing them out.
+
 0.0.6
 =====
 
