@@ -132,7 +132,9 @@ class SSE extends EventEmitter
       throw new Error("Unparsable message. (#{ message })")
 
   _writeHeaders: ->
-    @res.writeHead 200, 'OK', @constructor.headers()
+    @res.setHeader(header, value) for header, value of @constructor.headers()
+
+    #@res.writeHead 200, 'OK', @constructor.headers()
 
   _keepAlive: ->
     schedule = =>

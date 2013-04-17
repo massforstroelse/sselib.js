@@ -279,7 +279,15 @@ SSE = (function(_super) {
   };
 
   SSE.prototype._writeHeaders = function() {
-    return this.res.writeHead(200, 'OK', this.constructor.headers());
+    var header, value, _ref, _results;
+
+    _ref = this.constructor.headers();
+    _results = [];
+    for (header in _ref) {
+      value = _ref[header];
+      _results.push(this.res.setHeader(header, value));
+    }
+    return _results;
   };
 
   SSE.prototype._keepAlive = function() {
