@@ -13,10 +13,18 @@ Mock = function() {
   var _this = this;
 
   this.req = {};
-  this.req.headers = {};
   this.req.url = "http://example.com/";
+  this.req.headers = {};
   this.req.headers['last-event-id'] = "keyboard-cat";
   this.req.headers.accept = 'text/event-stream';
+  this.req.socket = {};
+  this.req.socket.address = function() {
+    return {
+      port: 12346,
+      family: 'IPv4',
+      address: '127.0.0.1'
+    };
+  };
   this.res = {};
   this.res.headers = {};
   this.res.setHeader = function(k, v) {
@@ -35,7 +43,7 @@ testMessage = {
   data: "yo"
 };
 
-SOCKET_INSTANCE_PROPERTIES_PUBLIC = ['sendComment', 'sendRetry', 'sendEvent', 'sendId', 'sendData', 'sendRaw', 'req', 'res', 'options', 'set', 'get'];
+SOCKET_INSTANCE_PROPERTIES_PUBLIC = ['sendComment', 'sendRetry', 'sendEvent', 'sendId', 'sendData', 'sendRaw', 'req', 'res', 'options', 'set', 'get', 'toString'];
 
 SOCKET_INSTANCE_PROPERTIES_PRIVATE = ['_processAndSendMessage', '_dispatchMessage', '_writeHeaders', '_keepAlive', '_compatibility'];
 
@@ -151,6 +159,16 @@ describe('SSE', function() {
 });
 
 describe('Initialized SSE', function() {
+  describe('The toString serialization should work', function() {
+    return it('should serialize properly', function(done) {
+      var instance, mock;
+
+      mock = new Mock();
+      instance = new sselib(mock.req, mock.res);
+      instance.toString().should.equal("<SSE 127.0.0.1:12346 (IPv4)>");
+      return done();
+    });
+  });
   describe('The @options should be populated with default values', function() {
     var instance, mock;
 

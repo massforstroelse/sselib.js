@@ -305,6 +305,13 @@ SSE = (function(_super) {
     }
   };
 
+  SSE.prototype.toString = function() {
+    var client;
+
+    client = this.req.socket.address();
+    return "<SSE " + client.address + ":" + client.port + " (" + client.family + ")>";
+  };
+
   return SSE;
 
 })(EventEmitter);

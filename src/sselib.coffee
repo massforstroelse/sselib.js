@@ -149,6 +149,10 @@ class SSE extends EventEmitter
     if @req.headers['x-requested-with'] is 'XMLHttpRequest'
       @res.xhr = null
 
+  toString: ->
+    client = @req.socket.address()
+    "<SSE #{ client.address }:#{ client.port } (#{ client.family })>"
+
 
 ### Aliases ###
 SSE::pub = SSE::_dispatchMessage

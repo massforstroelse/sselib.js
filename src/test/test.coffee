@@ -6,10 +6,13 @@ sselib = require '../sselib'
 # Utils
 Mock = ->
   @req = {}
-  @req.headers = {}
   @req.url = "http://example.com/" # fake the Url
+  @req.headers = {}
   @req.headers['last-event-id'] = "keyboard-cat"
   @req.headers.accept = 'text/event-stream'
+  @req.socket = {}
+  @req.socket.address = =>
+    return {port: 12346, family: 'IPv4', address: '127.0.0.1'}
   @res = {}
   @res.headers = {}
   @res.setHeader = (k, v) =>
@@ -38,7 +41,8 @@ SOCKET_INSTANCE_PROPERTIES_PUBLIC =
    'res',
    'options',
    'set',
-   'get']
+   'get',
+   'toString']
 
 SOCKET_INSTANCE_PROPERTIES_PRIVATE =
   ['_processAndSendMessage',
@@ -55,6 +59,7 @@ SOCKET_INSTANCE_OPTIONS_KEYS =
 
 # Let's begin testing!
 describe 'SSE', -> # add @message
+
   describe 'comment()', ->
     it 'should return a valid comment', (done) ->
       sselib.comment('cat').should.equal ': cat\n\n'
@@ -135,6 +140,14 @@ describe 'SSE', -> # add @message
       done()
 
 describe 'Initialized SSE', ->
+
+  describe 'The toString serialization should work', ->
+      it 'should serialize properly', (done) ->
+        mock = new Mock()
+        instance = new sselib(mock.req, mock.res)
+        instance.toString().should.equal "<SSE 127.0.0.1:12346 (IPv4)>"
+        done()
+
   describe 'The @options should be populated with default values', ->
       mock = new Mock()
       instance = new sselib(mock.req, mock.res)
@@ -240,6 +253,7 @@ describe 'Initialized SSE', ->
 
 testMiddleware = (connectApp, expressApp) ->
   describe "As middleware", ->
+
     describe 'As connect middleware', ->
       it 'should respond and attach itself whenever seeing event-stream accept headers', (done) ->
         request(connectApp).get('/').set('Accept', 'text/event-stream').expect(200).expect('Content-Type', /text\/event-stream/).end (err, res) ->
