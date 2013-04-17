@@ -343,13 +343,13 @@ module.exports = SSE;
 */
 
 
-MIDDLEWARE_INSTANCE_PROPERTIES = ['sendComment', 'sendRetry', 'sendEvent', 'sendId', 'sendData', 'sendRaw', 'set', 'get', 'toString'];
+MIDDLEWARE_INSTANCE_PROPERTIES = ['sendComment', 'sendRetry', 'sendEvent', 'sendId', 'sendData', 'sendRaw', 'set', 'get', 'toString', 'send'];
 
 middleware = function(req, res, options) {
   var callable, property, socket, _i, _len;
 
   callable = function(message) {
-    return this.sse.publish(message);
+    return this.sse.send(message);
   };
   socket = new SSE(req, res, options);
   for (_i = 0, _len = MIDDLEWARE_INSTANCE_PROPERTIES.length; _i < _len; _i++) {

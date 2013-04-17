@@ -134,8 +134,6 @@ class SSE extends EventEmitter
   _writeHeaders: ->
     @res.setHeader(header, value) for header, value of @constructor.headers()
 
-    #@res.writeHead 200, 'OK', @constructor.headers()
-
   _keepAlive: ->
     schedule = =>
       setTimeout (=>
@@ -176,10 +174,11 @@ MIDDLEWARE_INSTANCE_PROPERTIES =
    'toString']
 
 middleware = (req, res, options) ->
-  callable = (message) -> @sse.publish(message)
+  callable = (message) -> @sse._socket.send(message)
   socket = new SSE(req, res, options)
   for property in MIDDLEWARE_INSTANCE_PROPERTIES
     callable[property] = socket[property]
+  callable._socket = socket
   return callable
 
 module.exports.middleware = (options) ->
