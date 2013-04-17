@@ -175,9 +175,10 @@ SSE = (function(_super) {
       this.emit('reconnected');
     }
     this.res.once('close', function() {
-      if (_this.keepAliveTimer) {
-        return clearTimeout(_this.keepAliveTimer);
+      if (_this._keepAliveTimer) {
+        clearTimeout(_this._keepAliveTimer);
       }
+      return _this.emit('close', _this);
     });
     this.emit('ready');
   }
@@ -210,9 +211,9 @@ SSE = (function(_super) {
         case 'retry':
           return this.sendRetry(this.options.retry);
         case 'keepAlive':
-          return this.once('keepAlive', function() {
-            if (_this.keepAliveTimer) {
-              clearTimeout(_this.keepAliveTimer);
+          return this.once('_keepAlive', function() {
+            if (_this._keepAliveTimer) {
+              clearTimeout(_this._keepAliveTimer);
             }
             return _this._keepAlive();
           });
@@ -285,11 +286,11 @@ SSE = (function(_super) {
     schedule = function() {
       return setTimeout((function() {
         _this.sendComment("keepalive " + (Date.now()) + "\n\n");
-        _this.keepAliveTimer = schedule();
-        return _this.emit('keepAlive');
+        _this._keepAliveTimer = schedule();
+        return _this.emit('_keepAlive');
       }), _this.options.keepAlive);
     };
-    return this.keepAliveTimer = schedule();
+    return this._keepAliveTimer = schedule();
   };
 
   SSE.prototype._compatibility = function() {

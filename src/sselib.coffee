@@ -16,6 +16,7 @@ _utils.extend = (origin, extension) ->
 module.exports.utils = _utils
 
 class SSE extends EventEmitter
+
   @defaultOptions =
     retry: 5*1000
     keepAlive: 15*1000
@@ -65,7 +66,6 @@ class SSE extends EventEmitter
     if not callback then headerDict else callback(error, headerDict)
 
   constructor: (@req, @res, @options = {}) ->
-    #@constructor.emit 'connection', @
     @options = _utils.extend(@options, @constructor.defaultOptions)
     @_writeHeaders() unless @res.headersSent
     @emit 'connected'
@@ -76,8 +76,8 @@ class SSE extends EventEmitter
     @emit 'reconnected' if @lastEventId
 
     @res.once 'close', =>
-      clearTimeout @keepAliveTimer if @keepAliveTimer
-      #@constructor.emit 'close', @
+      clearTimeout @_keepAliveTimer if @_keepAliveTimer
+      @emit 'close', @
     @emit 'ready'
 
   get: (option) =>
@@ -92,8 +92,8 @@ class SSE extends EventEmitter
       switch option
         when 'retry' then @sendRetry @options.retry
         when 'keepAlive'
-          @once 'keepAlive', =>
-            clearTimeout @keepAliveTimer if @keepAliveTimer
+          @once '_keepAlive', =>
+            clearTimeout @_keepAliveTimer if @_keepAliveTimer
             @_keepAlive()
         when 'compatibility' then @_compatibility()
     else
@@ -137,10 +137,10 @@ class SSE extends EventEmitter
     schedule = =>
       setTimeout (=>
         @sendComment("keepalive #{ Date.now() }\n\n")
-        @keepAliveTimer = schedule()
-        @emit 'keepAlive'
+        @_keepAliveTimer = schedule()
+        @emit '_keepAlive'
       ), @options.keepAlive
-    @keepAliveTimer = schedule()
+    @_keepAliveTimer = schedule()
 
   _compatibility: ->
     ### XDomainRequest (MSIE8, MSIE9) ###
