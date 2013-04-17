@@ -57,6 +57,17 @@ SOCKET_INSTANCE_ALIASES =
 SOCKET_INSTANCE_OPTIONS_KEYS =
   ['keepAlive', 'retry', 'compatibility']
 
+MIDDLEWARE_INSTANCE_PROPERTIES =
+  ['sendComment',
+   'sendRetry',
+   'sendEvent',
+   'sendId',
+   'sendData',
+   'sendRaw',
+   'set',
+   'get',
+   'toString']
+
 # Let's begin testing!
 describe 'SSE', -> # add @message
 
@@ -275,20 +286,8 @@ testMiddleware = (connectApp, expressApp) ->
           mock.res.should.have.property('sse')
           done()
 
-      SOCKET_INSTANCE_PROPERTIES_PUBLIC.forEach (property) ->
-        it "should provide the public property #{ property } under res.sse", (done) ->
-          app mock.req, mock.res, ->
-            mock.res.sse.should.have.property(property)
-            done()
-
-      SOCKET_INSTANCE_PROPERTIES_PRIVATE.forEach (property) ->
-        it "should provide the private property #{ property } under res.sse", (done) ->
-          app mock.req, mock.res, ->
-            mock.res.sse.should.have.property(property)
-            done()
-
-      SOCKET_INSTANCE_ALIASES.forEach (property) ->
-        it "should provide the alias #{ property } under res.sse", (done) ->
+      MIDDLEWARE_INSTANCE_PROPERTIES.forEach (property) ->
+        it "should provide the public middleware property #{ property } under res.sse", (done) ->
           app mock.req, mock.res, ->
             mock.res.sse.should.have.property(property)
             done()

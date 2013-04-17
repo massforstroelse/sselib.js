@@ -103,6 +103,7 @@ class SSE extends EventEmitter
     @sendRaw @constructor.comment(comment)
 
   sendRetry: (time) =>
+    @options.retry = time unless @options.retry is time
     @sendRaw @constructor.retry(time)
 
   sendEvent: (event) =>
@@ -161,12 +162,25 @@ SSE::send = SSE::_dispatchMessage
 
 module.exports = SSE
 
+
+
 ### Connect/Express middleware ###
+MIDDLEWARE_INSTANCE_PROPERTIES =
+  ['sendComment',
+   'sendRetry',
+   'sendEvent',
+   'sendId',
+   'sendData',
+   'sendRaw',
+   'set',
+   'get',
+   'toString']
+
 middleware = (req, res, options) ->
   callable = (message) -> @sse.publish(message)
   socket = new SSE(req, res, options)
-  for key, value of socket
-    callable[key] = value
+  for property in MIDDLEWARE_INSTANCE_PROPERTIES
+    callable[property] = socket[property]
   return callable
 
 module.exports.middleware = (options) ->
