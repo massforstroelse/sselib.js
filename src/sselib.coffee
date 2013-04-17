@@ -67,8 +67,8 @@ class SSE extends EventEmitter
 
   constructor: (@req, @res, @options = {}) ->
     @options = _utils.extend(@options, @constructor.defaultOptions)
-    @_writeHeaders() unless @res.headersSent
     @emit 'connected'
+    @_writeHeaders() unless @res.headersSent
     @sendRetry(@options.retry) if @options.retry
     @_compatibility() if @options.compatibility
     @_keepAlive() if @options.keepAlive
@@ -77,7 +77,7 @@ class SSE extends EventEmitter
 
     @res.once 'close', =>
       clearTimeout @_keepAliveTimer if @_keepAliveTimer
-      @emit 'close', @
+      @emit 'close'
     @emit 'ready'
 
   get: (option) =>
@@ -154,15 +154,12 @@ class SSE extends EventEmitter
     client = @req.socket.address()
     "<SSE #{ client.address }:#{ client.port } (#{ client.family })>"
 
-
 ### Aliases ###
 SSE::pub = SSE::_dispatchMessage
 SSE::publish = SSE::_dispatchMessage
 SSE::send = SSE::_dispatchMessage
 
 module.exports = SSE
-
-
 
 ### Connect/Express middleware ###
 MIDDLEWARE_INSTANCE_PROPERTIES =

@@ -157,10 +157,10 @@ SSE = (function(_super) {
     this.sendComment = __bind(this.sendComment, this);
     this.get = __bind(this.get, this);
     this.options = _utils.extend(this.options, this.constructor.defaultOptions);
+    this.emit('connected');
     if (!this.res.headersSent) {
       this._writeHeaders();
     }
-    this.emit('connected');
     if (this.options.retry) {
       this.sendRetry(this.options.retry);
     }
@@ -178,7 +178,7 @@ SSE = (function(_super) {
       if (_this._keepAliveTimer) {
         clearTimeout(_this._keepAliveTimer);
       }
-      return _this.emit('close', _this);
+      return _this.emit('close');
     });
     this.emit('ready');
   }
