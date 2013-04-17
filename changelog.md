@@ -1,3 +1,9 @@
+0.0.6
+=====
+
+  * Correctified the repo url
+  * Changed name of changelog
+
 0.0.5
 =====
 

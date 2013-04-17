@@ -1,7 +1,7 @@
 {
   "name": "sselib",
   "description": "SSE (Server Sent Events) library and middleware.",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "Daniel Waardal <daniel@massforstroel.se>",
   "keywords": [
     "sse",
@@ -31,7 +31,7 @@
   "homepage": "https://github.com/massforstroelse/sselib.js",
   "repository": {
     "type": "git",
-    "url": "http://github.com/massforstroelse/sselib.js/sselib.js.git"
+    "url": "git://github.com/massforstroelse/sselib.js.git"
   },
   "bugs": {
     "url": "https://github.com/massforstroelse/sselib.js/issues"
