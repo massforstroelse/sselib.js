@@ -307,12 +307,20 @@ SSE = (function(_super) {
   SSE.prototype._compatibility = function() {
     /* XDomainRequest (MSIE8, MSIE9)
     */
+
+    var lastEventId;
+
     this.sendComment(Array(2049).join(' '));
     /* Remy Sharp's Polyfill support.
     */
 
     if (this.req.headers['x-requested-with'] === 'XMLHttpRequest') {
-      return this.res.xhr = null;
+      this.res.xhr = null;
+    }
+    lastEventId = require('url').parse(this.req.url, true).query.lastEventId;
+    if (lastEventId) {
+      this.lastEventId = lastEventId;
+      return this.emit('reconnected');
     }
   };
 
@@ -363,7 +371,9 @@ middleware = function(req, res, options) {
 module.exports.middleware = function(options) {
   return function(req, res, next) {
     if (req.headers.accept === "text/event-stream") {
-      res.sse = middleware(req, res, options);
+      if ((options != null ? options.compatibility : void 0) == null) {
+        res.sse = middleware(req, res, options);
+      }
     }
     if (next != null) {
       return next();
