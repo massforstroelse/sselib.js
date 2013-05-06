@@ -1,3 +1,8 @@
+0.0.92
+======
+
+  * Normal message dispatching now writes an extra linefeed after data to trigger the event.
+
 0.0.91
 ======
 
