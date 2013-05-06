@@ -70,8 +70,8 @@ class SSE extends EventEmitter
     @options = _utils.extend(@options, @constructor.defaultOptions)
     @emit 'connected'
     @_writeHeaders()
-    @sendRetry(@options.retry) if @options.retry
     @_compatibility() if @options.compatibility
+    @sendRetry(@options.retry) if @options.retry
     @_keepAlive() if @options.keepAlive
     if not @lastEventId
       @lastEventId = @req.headers['last-event-id'] or null

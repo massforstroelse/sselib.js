@@ -161,11 +161,11 @@ SSE = (function(_super) {
     this.options = _utils.extend(this.options, this.constructor.defaultOptions);
     this.emit('connected');
     this._writeHeaders();
-    if (this.options.retry) {
-      this.sendRetry(this.options.retry);
-    }
     if (this.options.compatibility) {
       this._compatibility();
+    }
+    if (this.options.retry) {
+      this.sendRetry(this.options.retry);
     }
     if (this.options.keepAlive) {
       this._keepAlive();
