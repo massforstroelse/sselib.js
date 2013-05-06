@@ -160,9 +160,7 @@ SSE = (function(_super) {
     this.get = __bind(this.get, this);
     this.options = _utils.extend(this.options, this.constructor.defaultOptions);
     this.emit('connected');
-    if (!this.res.headersSent) {
-      this._writeHeaders();
-    }
+    this._writeHeaders();
     if (this.options.retry) {
       this.sendRetry(this.options.retry);
     }

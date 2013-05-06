@@ -1,3 +1,8 @@
+0.0.91
+======
+
+  * Hot fix for headers not being sent when using yaffles polyfill.
+
 0.0.9
 =====
 

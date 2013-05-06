@@ -69,7 +69,7 @@ class SSE extends EventEmitter
   constructor: (@req, @res, @options = {}) ->
     @options = _utils.extend(@options, @constructor.defaultOptions)
     @emit 'connected'
-    @_writeHeaders() unless @res.headersSent
+    @_writeHeaders()
     @sendRetry(@options.retry) if @options.retry
     @_compatibility() if @options.compatibility
     @_keepAlive() if @options.keepAlive
