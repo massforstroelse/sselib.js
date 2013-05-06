@@ -1,3 +1,9 @@
+0.0.95
+======
+
+  * Retry is sent after compat-actions in order to not send headers prematurely.
+
+
 0.0.94
 ======
 
