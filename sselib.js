@@ -370,7 +370,9 @@ middleware = function(req, res, options) {
 module.exports.middleware = function(options) {
   return function(req, res, next) {
     if (req.headers.accept === "text/event-stream") {
-      res.sse = middleware(req, res, options);
+      if ((options != null ? options.compatibility : void 0) == null) {
+        res.sse = middleware(req, res, options);
+      }
     }
     if (next != null) {
       return next();

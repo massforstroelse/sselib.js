@@ -151,6 +151,7 @@ class SSE extends EventEmitter
     ### Remy Sharp's Polyfill support. ###
     if @req.headers['x-requested-with'] is 'XMLHttpRequest'
       @res.xhr = null
+
     if url.parse(@req.url, true).query.lastEventId
       @lastEventId = url.parse(@req.url, true).query.lastEventId
 
@@ -188,5 +189,5 @@ middleware = (req, res, options) ->
 module.exports.middleware = (options) ->
   return (req, res, next) ->
     if req.headers.accept is "text/event-stream"
-      res.sse = middleware(req, res, options)
+      res.sse = middleware(req, res, options) unless options?.compatibility?
     next() if next?
