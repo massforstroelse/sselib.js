@@ -1,4 +1,9 @@
-0.0.7
+0.0.9
+=====
+
+  * Added support for lastEventID as querystring.
+
+0.0.8
 =====
 
   * Added _socket to middleware.

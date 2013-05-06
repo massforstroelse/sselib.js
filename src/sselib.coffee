@@ -1,4 +1,5 @@
 {EventEmitter} = require 'events'
+url = require 'url'
 
 error = null
 
@@ -72,7 +73,8 @@ class SSE extends EventEmitter
     @sendRetry(@options.retry) if @options.retry
     @_compatibility() if @options.compatibility
     @_keepAlive() if @options.keepAlive
-    @lastEventId = @req.headers['last-event-id'] or null
+    if not @lastEventId
+      @lastEventId = @req.headers['last-event-id'] or null
     @emit 'reconnected' if @lastEventId
 
     @res.once 'close', =>
@@ -149,6 +151,8 @@ class SSE extends EventEmitter
     ### Remy Sharp's Polyfill support. ###
     if @req.headers['x-requested-with'] is 'XMLHttpRequest'
       @res.xhr = null
+    if url.parse(@req.url, true).query.lastEventId
+      @lastEventId = url.parse(@req.url, true).query.lastEventId
 
   toString: ->
     client = @req.socket.address()
