@@ -270,7 +270,8 @@ SSE = (function(_super) {
     if (_utils.typeCheck('Object', message)) {
       return this._processAndSendMessage(message);
     } else if (_utils.typeCheck('String', message)) {
-      return this.sendData(message);
+      this.sendData(message);
+      return this.sendRaw("\n");
     } else if (_utils.typeCheck('Array', message)) {
       return message.forEach(function(msg) {
         return this._dispatchMessage(msg);

@@ -128,6 +128,7 @@ class SSE extends EventEmitter
         @_processAndSendMessage(message)
     else if _utils.typeCheck 'String', message
         @sendData message
+        @sendRaw "\n"
     else if _utils.typeCheck 'Array', message
         message.forEach (msg) -> @_dispatchMessage(msg)
     else
