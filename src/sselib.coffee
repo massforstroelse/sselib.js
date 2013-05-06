@@ -122,13 +122,14 @@ class SSE extends EventEmitter
 
   _processAndSendMessage: (message) ->
     @sendRaw @constructor.message(message)
+    @sendRaw "\n"
 
   _dispatchMessage: (message) =>
     if _utils.typeCheck 'Object', message
         @_processAndSendMessage(message)
     else if _utils.typeCheck 'String', message
         @sendData message
-        @sendRaw "\n"
+
     else if _utils.typeCheck 'Array', message
         message.forEach (msg) -> @_dispatchMessage(msg)
     else

@@ -263,15 +263,15 @@ SSE = (function(_super) {
   };
 
   SSE.prototype._processAndSendMessage = function(message) {
-    return this.sendRaw(this.constructor.message(message));
+    this.sendRaw(this.constructor.message(message));
+    return this.sendRaw("\n");
   };
 
   SSE.prototype._dispatchMessage = function(message) {
     if (_utils.typeCheck('Object', message)) {
       return this._processAndSendMessage(message);
     } else if (_utils.typeCheck('String', message)) {
-      this.sendData(message);
-      return this.sendRaw("\n");
+      return this.sendData(message);
     } else if (_utils.typeCheck('Array', message)) {
       return message.forEach(function(msg) {
         return this._dispatchMessage(msg);
