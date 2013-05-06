@@ -308,8 +308,10 @@ SSE = (function(_super) {
   };
 
   SSE.prototype._compatibility = function() {
+    this.res.setHeader('Transfer-Encoding', 'chunked');
     /* XDomainRequest (MSIE8, MSIE9)
     */
+
     this.sendComment(Array(2049).join(' '));
     /* Remy Sharp's Polyfill support.
     */

@@ -1,3 +1,13 @@
+0.0.94
+======
+
+  * Transfer-Encoding is set to chunked in compatibility mode.
+
+0.0.93
+======
+
+  * Double linefeed sent after processed message.
+
 0.0.92
 ======
 

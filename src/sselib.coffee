@@ -148,6 +148,7 @@ class SSE extends EventEmitter
     @_keepAliveTimer = schedule()
 
   _compatibility: ->
+    @res.setHeader 'Transfer-Encoding', 'chunked'
     ### XDomainRequest (MSIE8, MSIE9) ###
     @sendComment Array(2049).join ' '
     ### Remy Sharp's Polyfill support. ###
@@ -156,6 +157,7 @@ class SSE extends EventEmitter
 
     if url.parse(@req.url, true).query.lastEventId
       @lastEventId = url.parse(@req.url, true).query.lastEventId
+
 
   toString: ->
     client = @req.socket.address()
