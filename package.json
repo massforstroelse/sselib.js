@@ -1,7 +1,7 @@
 {
   "name": "sselib",
   "description": "SSE (Server Sent Events) library and middleware.",
-  "version": "0.0.92",
+  "version": "0.0.93",
   "author": "Daniel Waardal <daniel@massforstroel.se>",
   "keywords": [
     "sse",
