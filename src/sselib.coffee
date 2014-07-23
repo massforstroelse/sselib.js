@@ -193,5 +193,5 @@ middleware = (req, res, options) ->
 module.exports.middleware = (options) ->
   return (req, res, next) ->
     if req.headers.accept is "text/event-stream"
-      res.sse = middleware(req, res, options) unless options?.compatibility?
+      res.sse = middleware(req, res, options)
     next() if next?
