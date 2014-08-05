@@ -351,7 +351,7 @@ middleware = function(req, res, options) {
 
 module.exports.middleware = function(options) {
   return function(req, res, next) {
-    if (req.headers.accept === "text/event-stream") {
+    if (req.headers.accept && req.headers.accept.match(/text\/event-stream/)) {
       res.sse = middleware(req, res, options);
     }
     if (next != null) {

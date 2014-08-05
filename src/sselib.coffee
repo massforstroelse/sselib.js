@@ -192,6 +192,6 @@ middleware = (req, res, options) ->
 
 module.exports.middleware = (options) ->
   return (req, res, next) ->
-    if req.headers.accept is "text/event-stream"
+    if req.headers.accept and req.headers.accept.match(/text\/event-stream/)
       res.sse = middleware(req, res, options)
     next() if next?
