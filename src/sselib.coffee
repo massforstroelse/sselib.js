@@ -62,6 +62,7 @@ class SSE extends EventEmitter
     headerDict =
       'Content-Type': 'text/event-stream; charset=utf-8'
       'Cache-Control': 'no-cache'
+      'Access-Control-Allow-Origin': '*'
       'Connection': 'keep-alive'
       'Transfer-Encoding': 'identity'
     if not callback then headerDict else callback(error, headerDict)
