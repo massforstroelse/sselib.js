@@ -145,6 +145,7 @@ describe('SSE', function() {
       sselib.headers().should.eql({
         'Content-Type': 'text/event-stream; charset=utf-8',
         'Cache-Control': 'no-cache',
+        'Access-Control-Allow-Origin': '*',
         'Connection': 'keep-alive',
         'Transfer-Encoding': 'identity'
       });
@@ -155,6 +156,7 @@ describe('SSE', function() {
         return result.should.eql({
           'Content-Type': 'text/event-stream; charset=utf-8',
           'Cache-Control': 'no-cache',
+          'Access-Control-Allow-Origin': '*',
           'Connection': 'keep-alive',
           'Transfer-Encoding': 'identity'
         });
